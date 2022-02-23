@@ -6,15 +6,6 @@ import math
 import statistics
 
 
-USER = "USER"
-FRAUD_USER = "FRAUS_USER"
-INTERMEDIARY = "INTERMEDIARY"
-NETWORK ="NETWORK"
-
-type_of_nodes = {
-
-}
-
 class Graph(nx.Graph):
     def __init__(self, **attr):
         super().__init__(**attr)
