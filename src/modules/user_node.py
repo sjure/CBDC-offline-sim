@@ -7,6 +7,15 @@ class UserNode(Node):
     def __init__(self):
         pass
 
-    def do_transaction(self):
+    def do_transaction(self,node):
+        pass
+
+    def get_balance(self):
+        pass
+
+    def remove_from_balance(self):
+        pass
+
+    def add_to_balance(self):
         pass
     
