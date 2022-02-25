@@ -1,6 +1,8 @@
-class Node():    
+from abc import ABC, abstractmethod
+class Node(ABC):    
     def __init__(self):
         pass
-
-    def get_neighbors(self):
+    
+    @abstractmethod
+    def tick(self):
         pass
