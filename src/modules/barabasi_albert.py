@@ -3,10 +3,11 @@ from modules.user_node import UserNode
 
 
 class BarabasiAlbert(Graph):
-    def __init__(self, n, m, **attr):
+    def __init__(self, n=100, m=3,**attr):
         super().__init__(**attr)
         g = nx.barabasi_albert_graph(n, m, seed=self.seed)
-        self.add_nodes_from(g.nodes, data=UserNode())
+        new_nodes = [(i,dict(data=UserNode(bc=self.bc, node_id=i, sim=self.sim,tx_rate=attr.get("tx_rate")))) for i in g.nodes]
+        self.add_nodes_from(new_nodes)
         self.add_edges_from(g.edges)
 
 
