@@ -100,7 +100,12 @@ class BlockChain():
         }
         self.queue.append(tx)
         self.check_trigger_new_block()
-    
+
+    def get_n_of_transactions(self):
+        sum = 0
+        for block in self.blocks:
+            sum += len(block.transactions)
+        return sum
 
 
 if __name__ == "__main__":
