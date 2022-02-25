@@ -21,6 +21,11 @@ class Block():
         block_string = json.dumps(self.block()).encode('utf-8')
         return hashlib.sha256(block_string).hexdigest()
         
+    def __str__(self):
+        return json.dumps(self.block())
+            
+    def __repr__(self):
+        return json.dumps(self.block())
 
 
 class BlockChain():
