@@ -4,19 +4,21 @@ import copy
 import matplotlib.pyplot as plt
 import math
 import statistics
+from modules.blockchain import BlockChain
 
 
 class Graph(nx.Graph):
-    def __init__(self, **attr):
+    def __init__(self,sim=None, **attr):
         super().__init__(**attr)
         self.seed = rd.randint(0, 1000) if "seed" not in attr.keys() else attr["seed"]
+        self.sim = sim
+        self.bc = BlockChain()
         self.attackdict = {
             "degree": nx.degree_centrality,
             "closeness": nx.closeness_centrality,
             "betweenness": nx.betweenness_centrality
         }
     
-
     def is_online(self):
         return self.has_connection_to_intermediary()
     
