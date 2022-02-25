@@ -9,8 +9,12 @@ config_dict = {
     },
     "tx_per_node": 10,
     "tx_rate": 0.5,
-    "balance": {
+    "tx_volume":{
         "mean": 10,
-        "std":3
-    }
+        "std": 10
+    },
+    "balance": {
+        "mean": 100,
+        "std":20
+    },
 }
