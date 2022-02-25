@@ -1,0 +1,16 @@
+config_dict = {
+    "tx_limit":150,
+    "graph": {
+        "type":"ba",
+        "params": {
+            "n":100,
+            "m":3,
+        }
+    },
+    "tx_per_node": 10,
+    "tx_rate": 0.5,
+    "balance": {
+        "mean": 10,
+        "std":3
+    }
+}
