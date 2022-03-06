@@ -6,7 +6,6 @@ import math
 import statistics
 from modules.blockchain import BlockChain
 
-
 class Graph(nx.Graph):
     def __init__(self,sim=None, **attr):
         super().__init__(**attr)
@@ -19,6 +18,13 @@ class Graph(nx.Graph):
             "betweenness": nx.betweenness_centrality
         }
     
+    def init_neighbors(self):
+        for node in self.nodes:
+            self.nodes[node]["data"].init_neighbors()
+    
+    def get_node(self,node_id):
+        return self.nodes[node_id]["data"]
+
     def is_online(self):
         return self.has_connection_to_intermediary()
     
