@@ -1,9 +1,9 @@
 config_dict = {
-    "tx_limit":150,
+    "tx_limit":1000,
     "graph": {
         "type":"ba",
         "params": {
-            "n":100,
+            "n":10,
             "m":3,
         }
     },
