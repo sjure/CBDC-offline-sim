@@ -39,7 +39,7 @@ class BlockChain():
         self.blocks.append(new_block)
 
     def check_trigger_new_block(self):
-        if len(self.queue) >= 1:
+        if len(self.queue) >= 10:
             self.add_block()
 
     def add_block(self):
@@ -53,11 +53,10 @@ class BlockChain():
     def verify_block_chain(self):
         prev_hash = self.iv
         for block_height, block in enumerate(self.blocks):
-            block_string = json.dumps(self.block()).encode('utf-8')
+            block_string = json.dumps(block.block()).encode('utf-8')
             hash = hashlib.sha256(block_string).hexdigest()
             if hash != block.block_hash:
                 return False
-
             if block_height != 0:
                 if block.previous_block_hash != prev_hash:
                     return False
@@ -73,6 +72,11 @@ class BlockChain():
                     balance += transaction["value"]
                 elif (transaction["from_address"] == address):
                     balance -= transaction["value"]
+        for transaction in self.queue:
+            if (transaction["to_address"] == address):
+                balance += transaction["value"]
+            elif (transaction["from_address"] == address):
+                balance -= transaction["value"]
         return balance
 
     def is_valid_transaction(self,from_address,value):
