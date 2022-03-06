@@ -6,9 +6,11 @@ class WattsStrogatz(Graph):
     def __init__(self, n, k, p, **attr):
         super().__init__(**attr)
         g = nx.watts_strogatz_graph(n, k, p, seed=self.seed)
-        new_nodes = [(i,dict(data=UserNode(bc=self.bc, node_id=i, sim=self.sim,tx_rate=attr.get("tx_rate")))) for i in g.nodes]
+        new_nodes = [(i,dict(data=UserNode(node_id=i, sim=self.sim,tx_rate=attr.get("tx_rate"),graph=self))) for i in g.nodes]
         self.add_nodes_from(new_nodes)
         self.add_edges_from(g.edges)
+        self.init_neighbors()
+
 
 
 if __name__ == '__main__':
