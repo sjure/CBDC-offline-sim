@@ -1,6 +1,7 @@
 import math
 import threading
 from modules.barabasi_albert import BarabasiAlbert
+from modules.types import NETWORK, INTERMEDIARY
 import logging
 import time
 from numpy import random
@@ -23,13 +24,31 @@ class Simulate():
         self.tx_rate = config_dict["tx_rate"]
         self.add_init_balance(config_dict["balance"]["mean"], config_dict["balance"]["std"])
         print("init blocks", len(self.graph.bc.blocks))
+        self.print_all_balances()
         self.generate_events()
         print("events",len(self.event_queue))
         self.event_organizer()
+        print("total blocks", len(self.graph.bc.blocks))
+        print("blocks", self.graph.bc.blocks)
+        print("blocks", self.graph.bc.verify_block_chain())
+        self.print_all_balances()
     
+    
+    def print_all_balances(self):
+        sum_of_balances = 0
+        for node_id in self.graph.nodes:
+            node = self.graph.get_node(node_id)
+            bal = self.graph.bc.balance_of(node.account_id)
+            sum_of_balances += bal
+            print(node_id, " balance ", bal)
+        print("Sum of all balances", sum_of_balances)
+
+
     def add_init_balance(self,mean,std):
         for node in self.graph.nodes():
-            wallet_id = self.graph.nodes[node]["data"].id
+            if (self.graph.nodes[node]["data"].type in [NETWORK,INTERMEDIARY]):
+                continue
+            wallet_id = self.graph.nodes[node]["data"].account_id
             wallet_amount = random.normal(mean,std)
             if (wallet_amount < 0):
                 wallet_amount=0
