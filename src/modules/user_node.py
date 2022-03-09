@@ -16,22 +16,38 @@ class UserNode(Node):
 
     def request_money(self):
         """ request money"""
+        neigbor_choice = int(random.randint(0, len(self.neighbors)))
+        target = self.neighbors[neigbor_choice]
+        amount = random.randint(1, 100)
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
-        if (has_connection_to_intermediary):
-            neigbor_choice = int(random.randint(0, len(self.neighbors)))
-            target = self.neighbors[neigbor_choice]
-            amount = random.randint(1, 100)
-            intermediary.request_transaction(self.node_id, target.node_id, amount)
+        if (not has_connection_to_intermediary):
             # Get nearby user to give money
+            intermediary.request_transaction(self.node_id, target.node_id, amount)
         else:
             print("OFFLINE")
-            neigbor_choice = int(random.randint(0, len(self.neighbors)))
-            target = self.neighbors[neigbor_choice]
-            amount = random.randint(1, 100)
+            self.request_offline_transaction(amount, target)
 
-    def request_offline_transaction(self, amount, reciever):
-        address = reciever.get_offline_address()
-        payment = self.ow.pay(amount, address)
+    def request_offline_transaction(self, amount, sender):
+        success, payment = sender.offline_transaction(amount, self)
+        if (success):
+            self.ow.collect(payment)
+        else:
+            print("no transaction")
+    
+    def offline_transaction(self,amount,reciever):
+        if (self.approve_offline_transaction(amount, reciever)):
+            address = reciever.get_offline_address()
+            payment = self.ow.pay(amount, address)
+            return True, payment
+        return False, None
+
+    def approve_offline_transaction(self, amount, reciever):
+        if (self.get_offline_balance() < amount):
+            return False
+        return self.approve_transaction(reciever, amount)
+
+    def get_offline_balance(self):
+        return self.ow.get_balance()
     
     def get_offline_address(self):
         return self.ow.account_id
