@@ -15,6 +15,7 @@ class UserNode(Node):
         self.node_id = node_id
 
     def request_money(self):
+        """ request money"""
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
         if (has_connection_to_intermediary):
             neigbor_choice = int(random.randint(0, len(self.neighbors)))
