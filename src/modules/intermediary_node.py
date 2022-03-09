@@ -14,8 +14,8 @@ class IntermediaryNode(Node):
         self.bc = bc
 
     def add_transaction_to_bc(self, from_account,to_account,amount):
-        if (self.get_funds_of_node(from_account) <= amount):
-            print("ERROR, not enough funds")
+        if (self.get_funds_of_node(from_account) < amount):
+            print("ERROR, not enough funds", self.get_funds_of_node(from_account), amount)
             return False
         self.bc.add_transaction(to_account, from_account, amount)
 
@@ -28,12 +28,13 @@ class IntermediaryNode(Node):
 
     
     def offline_deposit(self, node, amount):
-        if (self.bc.balance_of(node.account_id) >= amount):
-            pass
-    
-    def offline_withdraw(self, node, amount):
-        if (self.bc.balance_of(node.get_offline_address()) >= amount):
-            pass
+        self.add_transaction_to_bc(node.account_id,node.get_offline_address(),amount)
+        return ""
+
+    def offline_withdraw(self, node, amount, signature):
+        # Verify signature of Secure hardware deletion of funds
+        return self.add_transaction_to_bc(node.get_offline_address(),node.account_id, amount)
+        
     
     def redeem_payments(self, payments):
         payments.sort(key=operator.attrgetter("timestamp"), reverse=False)

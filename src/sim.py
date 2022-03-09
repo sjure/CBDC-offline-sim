@@ -31,8 +31,8 @@ class Simulate():
         print("events",self.event_queue.qsize())
         self.event_organizer()
         print("total blocks", len(self.graph.bc.blocks))
-        print("blocks", self.graph.bc.blocks)
-        print("blocks", self.graph.bc.verify_block_chain())
+        #print("blocks", self.graph.bc.blocks)
+        print("All blocks authentic", self.graph.bc.verify_block_chain())
         self.print_all_balances()
     
     
