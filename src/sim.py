@@ -1,13 +1,14 @@
-import math
-import threading
 from modules.barabasi_albert import BarabasiAlbert
 from modules.types import NETWORK, INTERMEDIARY
-import logging
-import time
-from numpy import random
-format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=format, level=logging.INFO,datefmt="%H:%M:%S")
 from config import InputsConfig as p
+import math
+import logging
+from queue import Queue
+from numpy import random
+
+
+LOGGING_FORMAT = "%(asctime)s: %(message)s"
+logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")
 
 graphs = {
     "ba": BarabasiAlbert,
@@ -16,7 +17,7 @@ graphs = {
 class Simulate():
     """ Simulation class """
     def __init__(self):
-        self.event_queue = []
+        self.event_queue = Queue()
         self.running = True
         graph_type = p.graph_type
         graph_params = p.graph_params
@@ -28,7 +29,7 @@ class Simulate():
         print("init blocks", len(self.graph.bc.blocks))
         self.print_all_balances()
         self.generate_events()
-        print("events",len(self.event_queue))
+        print("events",self.event_queue.qsize())
         self.event_organizer()
         print("total blocks", len(self.graph.bc.blocks))
         print("blocks", self.graph.bc.blocks)
@@ -57,15 +58,15 @@ class Simulate():
             self.graph.bc.deposit_money(wallet_id, wallet_amount)
 
     def add_event(self,event):
-        self.event_queue.append(event)
+        self.event_queue.put(event)
 
     def event_handler(self,event):
         event()
 
     def event_organizer(self):
         while self.running:
-            if (len(self.event_queue)):
-                event = self.event_queue.pop(0)
+            if (self.event_queue.not_empty):
+                event = self.event_queue.get()
                 self.event_handler(event)
             self.check_finished()
     
@@ -80,7 +81,7 @@ class Simulate():
                 nodeObject.tick()
 
     def check_finished(self):
-        if self.graph.bc.get_n_of_transactions() >= self.tx_limit or len(self.event_queue) == 0 :
+        if self.graph.bc.get_n_of_transactions() >= self.tx_limit or self.event_queue.empty:
             self.running = False
 
 
