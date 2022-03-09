@@ -1,15 +1,17 @@
+from typing import List
 import networkx as nx
 import random as rd
 import copy
 import matplotlib.pyplot as plt
-import math
-import statistics
 from modules.blockchain import BlockChain
+from config import InputsConfig as p
+from modules.node import Node
 
 class Graph(nx.Graph):
+    """ Graph of the network to be simulated """
     def __init__(self,sim=None, **attr):
         super().__init__(**attr)
-        self.seed = rd.randint(0, 1000) if "seed" not in attr.keys() else attr["seed"]
+        self.seed = rd.randint(0, 1000)
         self.sim = sim
         self.bc = BlockChain()
         self.attackdict = {
@@ -18,26 +20,27 @@ class Graph(nx.Graph):
             "betweenness": nx.betweenness_centrality
         }
     
-    def init_neighbors(self):
-        for node in self.nodes:
-            self.nodes[node]["data"].init_neighbors()
-    
-    def get_node(self,node_id):
+    def get_node(self,node_id: str) -> Node:
+        """ Return the node object of a node id"""
         return self.nodes[node_id]["data"]
 
-    def is_online(self):
-        return self.has_connection_to_intermediary()
+    def init_neighbors(self) -> None:
+        for node in self.nodes:
+            self.get_node(node).init_neighbors()
+
+    # def is_online(self):
+    #     return self.has_connection_to_intermediary()
     
-    def do_transaction(self):
-        if (self.has_neightbor()):
-            neighbor = self.get_random_neightbor()
-            if (self.is_online()):
-                self.do_transaction_to_node(neighbor)
-            else:
-                if (self.is_fradulent):
-                    self.do_fradulent_offline_transaction_to_node(neighbor)
-                else:
-                    self.do_offline_transaction_to_node(neighbor)
+    # def do_transaction(self):
+    #     if (self.has_neightbor()):
+    #         neighbor = self.get_random_neightbor()
+    #         if (self.is_online()):
+    #             self.do_transaction_to_node(neighbor)
+    #         else:
+    #             if (self.is_fradulent):
+    #                 self.do_fradulent_offline_transaction_to_node(neighbor)
+    #             else:
+    #                 self.do_offline_transaction_to_node(neighbor)
 
 
     def get_largest_components_size(self):
@@ -77,7 +80,7 @@ class Graph(nx.Graph):
     def get_shortest_path(self, node1, node2):
         path = None
         try:
-            path = nx.shortest_path(self, node1, node2)
+            path = nx.shortest_path(node1, node2)
         except nx.NetworkXNoPath:
             pass
         return path
@@ -88,7 +91,7 @@ class Graph(nx.Graph):
         self.draw(node_color=node_color)
 
     def mark_shortest_path(self, node1, node2):
-        path = nx.shortest_path(self, node1, node2)
+        path = nx.shortest_path(node1, node2)
         edges = self.edges()
         marked_edges = [(element, path[i + 1]) for i, element in enumerate(path) if i < len(path) - 1]
         edge_color = [("k" if (u, v) not in marked_edges and (v, u) not in marked_edges else "#b82d2d") for u, v in
@@ -98,6 +101,7 @@ class Graph(nx.Graph):
         self.draw(edge_color=edge_color, node_color=node_color)
 
     def draw(self, node_color="#1f78b4", edge_color="k", node_size=300):
+        """ Draw the graph """
         plt.figure(num=None, figsize=(10, 10))
         nx.draw_kamada_kawai(self, with_labels=True, edge_color=edge_color, node_color=node_color, node_size=node_size,
                              data=True)

@@ -7,22 +7,24 @@ import time
 from numpy import random
 format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=format, level=logging.INFO,datefmt="%H:%M:%S")
+from config import InputsConfig as p
 
 graphs = {
     "ba": BarabasiAlbert,
 }
 
 class Simulate():
-    def __init__(self,**config_dict):
+    """ Simulation class """
+    def __init__(self):
         self.event_queue = []
         self.running = True
-        graph_type = config_dict["graph"]["type"]
-        graph_params = config_dict["graph"]["params"]
-        self.graph = graphs[graph_type](sim=self,**graph_params,**config_dict)
-        self.tx_limit = config_dict["tx_limit"]
-        self.tx_per_node = config_dict["tx_per_node"]
-        self.tx_rate = config_dict["tx_rate"]
-        self.add_init_balance(config_dict["balance"]["mean"], config_dict["balance"]["std"])
+        graph_type = p.graph_type
+        graph_params = p.graph_params
+        self.graph = graphs[graph_type](sim=self,**graph_params)
+        self.tx_limit = p.tx_limit
+        self.tx_per_node = p.tx_per_node
+        self.tx_rate = p.tx_rate
+        self.add_init_balance(p.balance["mean"], p.balance["std"])
         print("init blocks", len(self.graph.bc.blocks))
         self.print_all_balances()
         self.generate_events()
@@ -83,7 +85,6 @@ class Simulate():
 
 
 if __name__ == "__main__":
-    from config import config_dict
-    simulator = Simulate(**config_dict)
+    simulator = Simulate()
 
     

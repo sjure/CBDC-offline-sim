@@ -1,7 +1,5 @@
 from modules.node import Node
 from modules.types import INTERMEDIARY
-import secrets
-from numpy import random
 
 class IntermediaryNode(Node):
         is_online = True

@@ -3,46 +3,52 @@ import secrets
 import json
 
 class Block():
+    """ Block """
     def __init__(self,transactions,height, previous_block_hash):
         self.transactions = transactions
         self.height = height
         self.previous_block_hash = previous_block_hash
         self.block_hash = self.sign_block()
-    
+
     def block(self):
+        """ Returns the block object """
         return {
             "tx": self.transactions,
             "height":self.height,
             "prev_hash":self.previous_block_hash
         }
 
-        
     def sign_block(self):
+        """ Returns the sha256 signature of the block """
         block_string = json.dumps(self.block()).encode('utf-8')
         return hashlib.sha256(block_string).hexdigest()
-        
+
     def __str__(self):
         return json.dumps(self.block())
-            
+
     def __repr__(self):
         return json.dumps(self.block())
 
 
 class BlockChain():
+    """ Blockchain object """
     def __init__(self):
         self.blocks = []
         self.queue = []
         self.iv = secrets.token_hex(16)
 
     def init_blockchain(self):
+        """ Initializes the first block of the blockchain with the iv """
         new_block = Block(self.queue,len(self.blocks),self.iv)
         self.blocks.append(new_block)
 
     def check_trigger_new_block(self):
+        """ Trigger new block if the queue is longer than the blocksize of queue """
         if len(self.queue) >= 10:
             self.add_block()
 
     def add_block(self):
+        """ Add new block to the blockchain from the queue """
         if len(self.blocks) == 0:
             self.init_blockchain()
         else:

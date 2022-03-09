@@ -1,13 +1,13 @@
 from queue import Queue
 from modules.types import NETWORK, INTERMEDIARY
 
-def BFS_to_intermediary(nodes, start_node):
+def bfs_to_intermediary(nodes, start_node):
+    """ BFS search """
     visited = set()
     queue = Queue()
 
     queue.put(start_node)
     visited.add(start_node)
-    
     path_found = False
     intermediary_node = -1
 
@@ -23,6 +23,6 @@ def BFS_to_intermediary(nodes, start_node):
             for next_node in current_node_data.network_neighbors:
                 if next_node not in visited:
                     queue.put(next_node)
-                    visited.add(next_node)            
+                    visited.add(next_node)
 
-    return (path_found, current_node_data)
+    return (path_found, intermediary_node)
