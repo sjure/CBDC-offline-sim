@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import secrets
+from abc import ABC, abstractmethod
 from modules.types import NETWORK, INTERMEDIARY,USER, FRAUD_USER
 class Node(ABC):
     """ Node object to use in the graph """
