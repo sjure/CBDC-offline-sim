@@ -64,7 +64,7 @@ class Simulate():
 
     def event_organizer(self):
         while self.running:
-            if (self.event_queue.not_empty):
+            if (not self.event_queue.empty()):
                 event = self.event_queue.get()
                 self.event_handler(event)
             self.check_finished()
@@ -80,7 +80,7 @@ class Simulate():
                 nodeObject.tick()
 
     def check_finished(self):
-        if self.graph.bc.get_n_of_transactions() >= self.tx_limit or self.event_queue.empty:
+        if self.graph.bc.get_n_of_transactions() >= self.tx_limit or self.event_queue.empty():
             self.running = False
 
 
