@@ -2,13 +2,14 @@ import secrets
 import time
 
 class OfflinePayment():
-    def __init__(self, amount, sender, reciever, timestamp, counter, signature):
+    def __init__(self, amount, sender, reciever, timestamp, counter, signature, certificate):
         self.amount = amount
         self.sender = sender
         self.reciever = reciever
         self.timestamp = timestamp
         self.counter = counter
         self.signature = signature
+        self.certificate = certificate
 
 
 class OfflineWallet():
@@ -18,6 +19,7 @@ class OfflineWallet():
         self.balance = 0
         self.counter = 0
         self.account_id = secrets.token_hex(16)
+        self.certificate
         self.__cert_init()
 
     def __cert_init(self):
@@ -35,7 +37,7 @@ class OfflineWallet():
         self.counter += 1
         self.balance += amount
         signature = self._sign([amount,sender,self.account_id, int(time.time()*1e6), self.counter])
-        return OfflinePayment(amount, sender, self.account_id, int(time.time()*1e6), self.counter, signature)
+        return OfflinePayment(amount, sender, self.account_id, int(time.time()*1e6), self.counter, signature, self.certificate)
 
 
     def withdraw(self, reciever, amount):
@@ -43,14 +45,14 @@ class OfflineWallet():
         self.counter += 1
         self.balance -= amount
         signature = self._sign([-amount, self.account_id, reciever, int(time.time()*1e6), self.counter])
-        return OfflinePayment(-amount, self.account_id, reciever, int(time.time()*1e6), self.counter,signature)
+        return OfflinePayment(-amount, self.account_id, reciever, int(time.time()*1e6), self.counter,signature, self.certificate)
 
     def pay(self, amount, reciever):
         """Creates an offine payment object."""
         self.counter += 1
         self.balance -= amount
         signature = self._sign([amount, self.account_id, reciever,int(time.time()*1e6), self.counter])
-        return OfflinePayment(amount, self.account_id, reciever, int(time.time()*1e6), self.counter, signature)
+        return OfflinePayment(amount, self.account_id, reciever, int(time.time()*1e6), self.counter, signature, self.certificate)
 
     def collect(self, payment: OfflinePayment):
         """ Verifies an offline payment and applies it to the offline balance by increasing it with the
@@ -65,6 +67,12 @@ class OfflineWallet():
     def get_balance(self):
         """ Returns the current offline balance stored inside the TEE storage."""
         return self.balance
+    
+    def redeem_payments(self):
+        """ Returns payments to redeem to intermediary """
+        payments_to_redeem = self.payment_log
+        self.payment_log = []
+        return payments_to_redeem
 
 if __name__ == "__main__":
     ow = OfflineWallet()
