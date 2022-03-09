@@ -6,7 +6,6 @@ import logging
 from queue import Queue
 from numpy import random
 
-
 LOGGING_FORMAT = "%(asctime)s: %(message)s"
 logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")
 
@@ -87,5 +86,3 @@ class Simulate():
 
 if __name__ == "__main__":
     simulator = Simulate()
-
-    
