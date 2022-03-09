@@ -1,7 +1,7 @@
 from queue import Queue
 from modules.types import NETWORK, INTERMEDIARY
 
-def bfs_to_intermediary(nodes, start_node):
+def bfs_to_intermediary(start_node):
     """ BFS search """
     visited = set()
     queue = Queue()
@@ -12,9 +12,8 @@ def bfs_to_intermediary(nodes, start_node):
     intermediary_node = -1
 
     while not queue.empty():
-        current_node_id = queue.get()
-        current_node_data = nodes[current_node_id]["data"]
-
+        current_node_data = queue.get()
+        current_node_id = current_node_data.node_id
         if (current_node_data.type == INTERMEDIARY and current_node_data.is_online):
             path_found = True
             intermediary_node = current_node_data

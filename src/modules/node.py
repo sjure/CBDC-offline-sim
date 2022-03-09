@@ -1,6 +1,7 @@
 import secrets
 from abc import ABC, abstractmethod
 from modules.types import NETWORK, INTERMEDIARY,USER, FRAUD_USER
+from modules.offline_wallet import OfflineWallet
 class Node(ABC):
     """ Node object to use in the graph """
     neighbors = []
@@ -9,6 +10,7 @@ class Node(ABC):
         self.graph = graph
         self.node_id = node_id
         self.account_id = secrets.token_hex(16)
+        self.ow = OfflineWallet()
 
     def init_neighbors(self):
         """
@@ -19,10 +21,11 @@ class Node(ABC):
         network_neighbors = []
         neighbors = []
         for node_id in list(self.graph.neighbors(self.node_id)):
-            if self.graph.get_node(node_id).type in [NETWORK, INTERMEDIARY]:
-                network_neighbors.append(node_id)
-            elif self.graph.get_node(node_id).type in [USER, FRAUD_USER]:
-                neighbors.append(node_id)
+            node = self.graph.get_node(node_id)
+            if node.type in [NETWORK, INTERMEDIARY]:
+                network_neighbors.append(node)
+            elif node.type in [USER, FRAUD_USER]:
+                neighbors.append(node)
             else:
                 raise Exception("Neighbor type is not defined")
         self.network_neighbors = network_neighbors

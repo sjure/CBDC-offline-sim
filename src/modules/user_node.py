@@ -23,9 +23,17 @@ class UserNode(Node):
             amount = random.randint(1, 100)
             intermediary.request_transaction(self.node_id, target, amount)
             # Get nearby user to give money
+        else:
+            neigbor_choice = int(random.randint(0, len(self.neighbors)))
+            target = self.neighbors[neigbor_choice]
+            amount = random.randint(1, 100)
+
+    def offline_transaction(self, amount, reciever):
+        payment = self.ow.pay(amount, reciever)
+
 
     def get_closest_intermediary(self):
-        return bfs_to_intermediary(self.graph.nodes, self.node_id)
+        return bfs_to_intermediary(self)
 
     
     def approve_transaction(self,from_node_id, amount):
