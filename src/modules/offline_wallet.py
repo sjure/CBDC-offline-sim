@@ -1,5 +1,6 @@
 import secrets
 import time
+import operator
 
 class OfflinePayment():
     def __init__(self, amount, sender, reciever, timestamp, counter, signature, certificate):
@@ -19,7 +20,7 @@ class OfflineWallet():
         self.balance = 0
         self.counter = 0
         self.account_id = secrets.token_hex(16)
-        self.certificate
+        self.certificate = None
         self.__cert_init()
 
     def __cert_init(self):
@@ -73,6 +74,16 @@ class OfflineWallet():
         payments_to_redeem = self.payment_log
         self.payment_log = []
         return payments_to_redeem
+
+    def sync_payment_log(self, payment_log):
+        for payment in payment_log:
+            if payment not in self.payment_log:
+                self.payment_log.append(payment)
+        self.payment_log.sort(key=operator.attrgetter("timestamp"), reverse=False)
+
+    def get_payment_log(self):
+        return self.payment_log
+
 
 if __name__ == "__main__":
     ow = OfflineWallet()
