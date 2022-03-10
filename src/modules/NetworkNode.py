@@ -15,12 +15,10 @@ class NetworkNode(Node):
     def tick(self) -> None:
         """ The tick method of a router """
         if self.is_online:
-            failure_rate = p.network_failure_rate
-            if (poisson(1/failure_rate)):
+            if (poisson(1/p.network_failure_rate)):
                 self.is_online = False
                 print("network offline")
                 self.ticks_to_online = exponential(p.network_recovery_rate)
-
         else:
             self.current_offline_ticks += 1
             if (self.current_offline_ticks >= self.ticks_to_online):
