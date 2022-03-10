@@ -14,6 +14,7 @@ logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S"
 graphs = {
     "ba": BarabasiAlbert,
 }
+
 class Simulate:
     """ Simulation class """
 
