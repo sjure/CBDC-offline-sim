@@ -68,6 +68,7 @@ class IntermediaryNode(Node):
                 print("intermediary online")
                 self.current_offline_ticks = 0
                 self.ticks_to_online = 0
+                Statistics.intermediary_repairs += 1
 
 
     def tick(self):

@@ -27,6 +27,7 @@ class NetworkNode(Node):
             if (self.current_offline_ticks >= self.ticks_to_online):
                 self.current_offline_ticks = 0
                 self.ticks_to_online = 0
+                Statistics.network_repairs += 1
 
     def tick(self) -> None:
         """ The tick method of a router """
