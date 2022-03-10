@@ -28,6 +28,8 @@ class IntermediaryNode(Node):
         payee_node = self.graph.get_node(payee_node_id)
         if not payer_node.approve_transaction(payee_node_id, amount):
             return False
+        Statistics.online_tx += 1
+        Statistics.online_tx_volume += amount
         self.add_transaction_to_bc(payer_node.account_id,payee_node.account_id,amount)
 
     

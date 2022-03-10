@@ -1,5 +1,6 @@
 import math
 from numpy import random
+from Statistics import Statistics
 from modules.BaseNode import Node
 from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
@@ -68,6 +69,8 @@ class UserNode(Node):
     def request_offline_transaction(self, amount, sender):
         success, payment, payment_log = sender.offline_transaction(amount, self)
         if (success):
+            Statistics.offline_tx += 1
+            Statistics.offline_tx_volume += payment.amount
             self.ow.collect(payment)
             self.ow.sync_payment_log(payment_log)
         else:
