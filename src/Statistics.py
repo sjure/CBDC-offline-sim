@@ -18,7 +18,9 @@ class Statistics:
 
     # HW failures
     network_failures = 0
+    network_repairs = 0
     intermediary_failures = 0
+    intermediary_repairs = 0
 
     # Money Supply
     online_money_init = 0
