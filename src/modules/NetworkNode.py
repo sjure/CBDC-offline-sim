@@ -1,7 +1,7 @@
 from numpy.random import poisson
-from modules.node import Node
-from modules.types import NETWORK
-from config import InputsConfig as p
+from modules.BaseNode import Node
+from modules.Types import NETWORK
+from Config import InputsConfig as p
 class NetworkNode(Node):
     """ Network Node, the simulation of routers in the network"""
     is_online = True

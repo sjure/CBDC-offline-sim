@@ -3,9 +3,9 @@ import networkx as nx
 import random as rd
 import copy
 import matplotlib.pyplot as plt
-from modules.blockchain import BlockChain as bc
-from config import InputsConfig as p
-from modules.node import Node
+from modules.Blockchain import BlockChain as bc
+from Config import InputsConfig as p
+from modules.BaseNode import Node
 
 class Graph(nx.Graph):
     """ Graph of the network to be simulated """

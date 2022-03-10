@@ -1,10 +1,10 @@
 """ The intermediary Node """
 import operator
 from numpy.random import poisson
-from modules.node import Node
-from modules.types import INTERMEDIARY
-from modules.blockchain import BlockChain as bc
-from config import InputsConfig as p
+from modules.BaseNode import Node
+from modules.Types import INTERMEDIARY
+from modules.Blockchain import BlockChain as bc
+from Config import InputsConfig as p
 
 class IntermediaryNode(Node):
     """ Intermediary Node processes the blockchain """

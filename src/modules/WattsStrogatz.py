@@ -1,6 +1,6 @@
 from modules.graph import Graph, nx, plt
 from modules.user_node import UserNode
-from config import InputsConfig as p
+from Config import InputsConfig as p
 
 class WattsStrogatz(Graph):
     """ Watts strgatz graph """

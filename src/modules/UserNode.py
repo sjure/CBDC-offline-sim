@@ -3,7 +3,7 @@ from numpy import random
 from modules.node import Node
 from modules.types import USER
 from modules.bfs import bfs_to_intermediary
-from config import InputsConfig as p
+from Config import InputsConfig as p
 
 class UserNode(Node):
     """ User node """
