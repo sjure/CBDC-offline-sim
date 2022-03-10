@@ -21,7 +21,8 @@ class EventOrganizer:
                 EventOrganizer.event_handler(event)
             EventOrganizer.check_finished()
     
-    def generate_events(graph, nodes):
+    def generate_events(graph):
+        nodes = graph.nodes()
         loops = math.floor(p.tx_per_node/ p.tx_rate)
         node_count = len(nodes)
         print("loops",loops)
