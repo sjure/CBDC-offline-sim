@@ -6,10 +6,10 @@ Features:
 * Simulation of graph [x]
 * Graph simulates Norway []
 * Blockchain for transactions [x]
-* Logging []
-    * Online vs offline tx, amount + volume
-    * Fradulent transactions success
-    * Fradulent transactions max and min
+* Logging [x]
+    * Online vs offline tx, amount + volume [x]
+    * Fradulent transactions success []
+    * Fradulent transactions max and min []
 * Offline scenarioes simulation [x]
     * Intermediary/ network nodes go offline [x]
 * Consolidations when network becomes online []
