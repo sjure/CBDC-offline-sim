@@ -10,8 +10,8 @@ Features:
     * Online vs offline tx, amount + volume
     * Fradulent transactions success
     * Fradulent transactions max and min
-* Offline scenarioes simulation []
-    * Intermediary/ network nodes go offline []
+* Offline scenarioes simulation [x]
+    * Intermediary/ network nodes go offline [x]
 * Consolidations when network becomes online []
 * Malicous actors and double spending attacks []
 * Offline protocol implementation []
