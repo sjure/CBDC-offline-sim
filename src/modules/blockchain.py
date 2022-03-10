@@ -30,35 +30,34 @@ class Block():
         return json.dumps(self.block())
 
 
-class BlockChain():
+class BlockChain:
     """ Blockchain object """
-    def __init__(self):
-        self.blocks = []
-        self.queue = []
-        self.iv = secrets.token_hex(16)
+    blocks = []
+    queue = []
+    iv = secrets.token_hex(16)
 
-    def init_blockchain(self):
+    def init_blockchain():
         """ Initializes the first block of the blockchain with the iv """
-        new_block = Block(self.queue,len(self.blocks),self.iv)
-        self.blocks.append(new_block)
+        new_block = Block(BlockChain.queue,len(BlockChain.blocks),BlockChain.iv)
+        BlockChain.blocks.append(new_block)
 
-    def check_trigger_new_block(self):
+    def check_trigger_new_block():
         """ Trigger new block if the queue is longer than the blocksize of queue """
-        if len(self.queue) >= 10:
-            self.add_block()
+        if len(BlockChain.queue) >= 10:
+            BlockChain.add_block()
 
-    def add_block(self):
+    def add_block():
         """ Add new block to the blockchain from the queue """
-        if len(self.blocks) == 0:
-            self.init_blockchain()
+        if len(BlockChain.blocks) == 0:
+            BlockChain.init_blockchain()
         else:
-            new_block = Block(self.queue,len(self.blocks),self.blocks[-1].block_hash)
-            self.blocks.append(new_block)
-        self.queue = []
+            new_block = Block(BlockChain.queue,len(BlockChain.blocks),BlockChain.blocks[-1].block_hash)
+            BlockChain.blocks.append(new_block)
+        BlockChain.queue = []
     
-    def verify_block_chain(self):
-        prev_hash = self.iv
-        for block_height, block in enumerate(self.blocks):
+    def verify_block_chain():
+        prev_hash = BlockChain.iv
+        for block_height, block in enumerate(BlockChain.blocks):
             block_string = json.dumps(block.block()).encode('utf-8')
             hash = hashlib.sha256(block_string).hexdigest()
             if hash != block.block_hash:
@@ -70,27 +69,27 @@ class BlockChain():
             
         return True
 
-    def balance_of(self, address):
+    def balance_of(address):
         balance = 0
-        for block in self.blocks:
+        for block in BlockChain.blocks:
             for transaction in block.transactions:
                 if (transaction["to_address"] == address):
                     balance += transaction["value"]
                 elif (transaction["from_address"] == address):
                     balance -= transaction["value"]
-        for transaction in self.queue:
+        for transaction in BlockChain.queue:
             if (transaction["to_address"] == address):
                 balance += transaction["value"]
             elif (transaction["from_address"] == address):
                 balance -= transaction["value"]
         return balance
 
-    def is_valid_transaction(self,from_address,value):
-        balance_of_sender = self.balance_of(from_address)
+    def is_valid_transaction(from_address,value):
+        balance_of_sender = BlockChain.balance_of(from_address)
         return value <= balance_of_sender
 
-    def add_transaction(self, to_address, from_address, value):
-        is_valid = self.is_valid_transaction(from_address, value)
+    def add_transaction(to_address, from_address, value):
+        is_valid = BlockChain.is_valid_transaction(from_address, value)
         if not is_valid:
             return False
         tx = {
@@ -98,22 +97,22 @@ class BlockChain():
             "from_address":from_address,
             "value":value
         }
-        self.queue.append(tx)
-        self.check_trigger_new_block()
+        BlockChain.queue.append(tx)
+        BlockChain.check_trigger_new_block()
         return True
     
-    def deposit_money(self,address,value):
+    def deposit_money(address,value):
         tx = {
             "to_address":address,
             "from_address":"",
             "value":value
         }
-        self.queue.append(tx)
-        self.check_trigger_new_block()
+        BlockChain.queue.append(tx)
+        BlockChain.check_trigger_new_block()
 
-    def get_n_of_transactions(self):
+    def get_n_of_transactions():
         sum = 0
-        for block in self.blocks:
+        for block in BlockChain.blocks:
             sum += len(block.transactions)
         return sum
 

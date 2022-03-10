@@ -3,7 +3,7 @@ import networkx as nx
 import random as rd
 import copy
 import matplotlib.pyplot as plt
-from modules.blockchain import BlockChain
+from modules.blockchain import BlockChain as bc
 from config import InputsConfig as p
 from modules.node import Node
 
@@ -13,7 +13,6 @@ class Graph(nx.Graph):
         super().__init__(**attr)
         self.seed = rd.randint(0, 1000)
         self.sim = sim
-        self.bc = BlockChain()
         self.attackdict = {
             "degree": nx.degree_centrality,
             "closeness": nx.closeness_centrality,

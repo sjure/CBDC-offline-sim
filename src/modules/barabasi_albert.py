@@ -14,7 +14,7 @@ class BarabasiAlbert(Graph):
         network_nodes = [(1000,dict(data=NetworkNode(node_id=1000,graph=self)))]
         self.add_edges_from([(i,1000) for i in list(self.nodes)])
         self.add_nodes_from(network_nodes)
-        intermediary_nodes = [(2000,dict(data=IntermediaryNode(node_id=2000,graph=self,bc=self.bc)))]
+        intermediary_nodes = [(2000,dict(data=IntermediaryNode(node_id=2000,graph=self)))]
         self.add_nodes_from(intermediary_nodes)
         self.add_edges_from([(2000,1000)])
         self.init_neighbors()

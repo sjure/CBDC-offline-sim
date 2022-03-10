@@ -2,22 +2,21 @@
 import operator
 from modules.node import Node
 from modules.types import INTERMEDIARY
-
+from modules.blockchain import BlockChain as bc
 
 class IntermediaryNode(Node):
     """ Intermediary Node processes the blockchain """
     is_online = True
     type = INTERMEDIARY
 
-    def __init__(self, bc=None, sim=None, node_id=-1,**attr):
+    def __init__(self, sim=None, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
-        self.bc = bc
 
     def add_transaction_to_bc(self, from_account,to_account,amount):
         if (self.get_funds_of_node(from_account) < amount):
             print("ERROR, not enough funds", self.get_funds_of_node(from_account), amount)
             return False
-        self.bc.add_transaction(to_account, from_account, amount)
+        bc.add_transaction(to_account, from_account, amount)
 
     def request_transaction(self, payee_node_id, payer_node_id, amount):
         payer_node = self.graph.get_node(payer_node_id)
@@ -44,7 +43,7 @@ class IntermediaryNode(Node):
             self.add_transaction_to_bc(payment.sender,payment.sender,payment.amount)
 
     def get_funds_of_node(self, account_id):
-        return self.bc.balance_of(account_id)
+        return bc.balance_of(account_id)
     
     def tick(self):
         pass

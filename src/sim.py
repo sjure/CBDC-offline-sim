@@ -5,6 +5,7 @@ from numpy import random
 from modules.barabasi_albert import BarabasiAlbert
 from modules.types import NETWORK, INTERMEDIARY
 from config import InputsConfig as p
+from modules.blockchain import BlockChain as bc
 
 LOGGING_FORMAT = "%(asctime)s: %(message)s"
 logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")
@@ -25,14 +26,14 @@ class Simulate():
         self.tx_per_node = p.tx_per_node
         self.tx_rate = p.tx_rate
         self.add_init_balance(p.balance["mean"], p.balance["std"])
-        print("init blocks", len(self.graph.bc.blocks))
+        print("init blocks", len(bc.blocks))
         self.print_all_balances()
         self.generate_events()
         print("events",self.event_queue.qsize())
         self.event_organizer()
-        print("total blocks", len(self.graph.bc.blocks))
+        print("total blocks", len(bc.blocks))
         #print("blocks", self.graph.bc.blocks)
-        print("All blocks authentic", self.graph.bc.verify_block_chain())
+        print("All blocks authentic", bc.verify_block_chain())
         self.print_all_balances()
     
     
@@ -40,7 +41,7 @@ class Simulate():
         sum_of_balances = 0
         for node_id in self.graph.nodes:
             node = self.graph.get_node(node_id)
-            bal = self.graph.bc.balance_of(node.account_id)
+            bal = bc.balance_of(node.account_id)
             sum_of_balances += bal
             print(node_id, " balance ", bal)
         print("Sum of all balances", sum_of_balances)
@@ -54,7 +55,7 @@ class Simulate():
             wallet_amount = random.normal(mean,std)
             if (wallet_amount < 0):
                 wallet_amount=0
-            self.graph.bc.deposit_money(wallet_id, wallet_amount)
+            bc.deposit_money(wallet_id, wallet_amount)
 
     def add_event(self,event):
         self.event_queue.put(event)
@@ -80,7 +81,7 @@ class Simulate():
                 nodeObject.tick()
 
     def check_finished(self):
-        if self.graph.bc.get_n_of_transactions() >= self.tx_limit or self.event_queue.empty():
+        if bc.get_n_of_transactions() >= self.tx_limit or self.event_queue.empty():
             self.running = False
 
 
