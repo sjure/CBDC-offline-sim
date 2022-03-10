@@ -20,6 +20,14 @@ class Statistics:
     network_failures = 0
     intermediary_failures = 0
 
+    # Money Supply
+    online_money_init = 0
+    online_money_after = 0
+    offline_money_init = 0
+    offline_money_after = 0
+    total_money_before = 0
+    total_money_after = 0
+
     def print_offline_online():
         print("Online".ljust(40) + "Offline".ljust(40))
         print("Tx".ljust(20) + "Volume".ljust(20) + "Tx".ljust(20) + "Volume".ljust(20))
