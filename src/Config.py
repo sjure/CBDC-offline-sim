@@ -20,7 +20,7 @@ class InputsConfig:
         "mean": 1500,
         "std": 500
     }
-    network_failure_rate = 12
+    network_failure_rate = 20
     network_recovery_rate = 5
-    intermediary_failure_rate = 12
+    intermediary_failure_rate = 20
     intermediary_recovery_rate = 5
