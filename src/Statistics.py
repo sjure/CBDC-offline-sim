@@ -3,9 +3,9 @@ from Config import InputsConfig as p
 
 class Statistics:
     # TX data
-    online_tx_amount = 0
+    online_tx = 0
     online_tx_volume = 0
-    offline_tx_amount = 0
+    offline_tx = 0
     offline_tx_volume = 0
 
     # Fraud tx data
