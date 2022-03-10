@@ -118,7 +118,7 @@ class BlockChain:
 
 
 if __name__ == "__main__":
-    bc = BlockChain()
+    bc = BlockChain
     bc.deposit_money("sjur", 100)
     bc.add_transaction("dennis","sjur",1)
     print(bc.blocks)
