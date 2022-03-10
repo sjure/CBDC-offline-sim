@@ -75,7 +75,7 @@ class UserNode(Node):
             self.ow.collect(payment)
             self.ow.sync_payment_log(payment_log)
         else:
-            print("no transaction")
+            print("no transaction", amount, sender.get_offline_balance())
     
     def offline_transaction(self,amount,reciever):
         if (self.approve_offline_transaction(amount, reciever)):
@@ -88,7 +88,7 @@ class UserNode(Node):
     def approve_offline_transaction(self, amount, reciever):
         if (self.get_offline_balance() < amount):
             return False
-        return self.approve_transaction(reciever, amount)
+        return True
 
     def get_offline_balance(self):
         return self.ow.get_balance()
