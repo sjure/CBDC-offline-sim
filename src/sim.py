@@ -3,7 +3,7 @@ import logging
 from queue import Queue
 from numpy import random
 from modules.barabasi_albert import BarabasiAlbert
-from modules.types import NETWORK, INTERMEDIARY
+from modules.types import NETWORK, INTERMEDIARY, USER
 from config import InputsConfig as p
 from modules.blockchain import BlockChain as bc
 
@@ -39,12 +39,19 @@ class Simulate():
     
     def print_all_balances(self):
         sum_of_balances = 0
+        sum_of_offline = 0
+        print("Node".ljust(5) + "Active balance".ljust(25) + "Offline balance".ljust(15))
         for node_id in self.graph.nodes:
             node = self.graph.get_node(node_id)
-            bal = bc.balance_of(node.account_id)
-            sum_of_balances += bal
-            print(node_id, " balance ", bal)
-        print("Sum of all balances", sum_of_balances)
+            online_balance = bc.balance_of(node.account_id)
+            sum_of_balances += online_balance
+            if node.type == USER:
+                offline_bal = bc.balance_of(node.get_offline_address())
+                sum_of_offline += offline_bal
+                print(str(node_id).ljust(5) + str(online_balance).ljust(25) + str(offline_bal).ljust(15))
+        print("Sum of all online balances", sum_of_balances)
+        print("Sum of all offline", sum_of_offline)
+        print("Sum of all", sum_of_offline + sum_of_balances)
 
 
     def add_init_balance(self,mean,std):
