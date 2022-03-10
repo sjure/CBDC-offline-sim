@@ -8,8 +8,10 @@ from Statistics import Statistics
 from modules.BarabasiAlbert import BarabasiAlbert
 
 
-LOGGING_FORMAT = "%(asctime)s: %(message)s"
+LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
 logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")
+
+logger = logging.getLogger(__name__)
 
 graphs = {
     "ba": BarabasiAlbert,
@@ -24,13 +26,13 @@ class Simulate:
         Simulate.add_init_balance(p.balance["mean"], p.balance["std"])
         Statistics.print_all_balances(Simulate.graph)
         eo.generate_events(Simulate.graph)
-        print("events", eo.event_queue.qsize())
+        logger.info(f"events {eo.event_queue.qsize()}")
         eo.event_organizer()
         online_balance, offline_balance = Statistics.get_sum_of_balances(Simulate.graph)
         Statistics.online_money_after = online_balance
         Statistics.offline_money_after = offline_balance
         Statistics.total_money_after = online_balance + offline_balance
-        print("All blocks authentic", bc.verify_block_chain())
+        logger.info(f"All blocks authentic {bc.verify_block_chain()}")
         Statistics.print_all_balances(Simulate.graph)
         Statistics.print_state()
 

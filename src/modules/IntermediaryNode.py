@@ -1,5 +1,6 @@
 """ The intermediary Node """
 import operator
+import logging
 from numpy.random import poisson, exponential
 from modules.BaseNode import Node
 from modules.Types import INTERMEDIARY
@@ -7,6 +8,7 @@ from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
 from Statistics import Statistics
 from EventOrganizer import EventOrganizer as eo
+logger = logging.getLogger("CBDCSimLog")
 
 class IntermediaryNode(Node):
     """ Intermediary Node processes the blockchain """
@@ -20,7 +22,7 @@ class IntermediaryNode(Node):
 
     def add_transaction_to_bc(self, from_account,to_account,amount):
         if (self.get_funds_of_node(from_account) < amount):
-            print("ERROR, not enough funds", self.get_funds_of_node(from_account), amount)
+            logger.error(f"ERROR, not enough funds {self.get_funds_of_node(from_account)}, {amount}")
             return False
         bc.add_transaction(to_account, from_account, amount)
 
@@ -58,14 +60,14 @@ class IntermediaryNode(Node):
         if self.is_online:
             if (poisson(1/p.intermediary_failure_rate)):
                 self.is_online = False
-                print("intermediary offline")
+                logger.info("intermediary -> offline")
                 self.ticks_to_online = exponential(p.intermediary_recovery_rate)
                 Statistics.intermediary_failures += 1
         else:
             self.current_offline_ticks += 1
             if (self.current_offline_ticks >= self.ticks_to_online):
                 self.is_online = True
-                print("intermediary online")
+                logger.info("intermediary -> online")
                 self.current_offline_ticks = 0
                 self.ticks_to_online = 0
                 Statistics.intermediary_repairs += 1

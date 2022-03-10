@@ -1,4 +1,5 @@
 import math
+import logging
 from numpy import random
 from Statistics import Statistics
 from modules.BaseNode import Node
@@ -6,6 +7,7 @@ from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p
 from EventOrganizer import EventOrganizer as eo
+logger = logging.getLogger("CBDCSimLog")
 
 class UserNode(Node):
     """ User node """
@@ -64,7 +66,6 @@ class UserNode(Node):
             # Get nearby user to give money
             intermediary.request_transaction(self.node_id, target.node_id, amount)
         else:
-            print("OFFLINE")
             self.request_offline_transaction(amount, target)
 
     def request_offline_transaction(self, amount, sender):
@@ -75,7 +76,7 @@ class UserNode(Node):
             self.ow.collect(payment)
             self.ow.sync_payment_log(payment_log)
         else:
-            print("no transaction", amount, sender.get_offline_balance())
+            logger.info(f"no transaction, amount={amount}, offline-bal={sender.get_offline_balance()}")
     
     def offline_transaction(self,amount,reciever):
         if (self.approve_offline_transaction(amount, reciever)):

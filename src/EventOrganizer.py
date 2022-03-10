@@ -7,6 +7,7 @@ from Config import InputsConfig as p
 class EventOrganizer:
     running = True
     event_queue = Queue()
+    tick = 0
     
     def add_event(event):
         EventOrganizer.event_queue.put(event)
@@ -28,6 +29,7 @@ class EventOrganizer:
         print("loops",loops)
         print("nodes",node_count)
         for _ in range(loops):
+            EventOrganizer.tick += 1
             for node in nodes:
                 nodeObject = graph.get_node(node)
                 nodeObject.tick()
