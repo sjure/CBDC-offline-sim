@@ -1,8 +1,8 @@
 import math
 from numpy import random
-from modules.node import Node
-from modules.types import USER
-from modules.bfs import bfs_to_intermediary
+from modules.BaseNode import Node
+from modules.Types import USER
+from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p
 
 class UserNode(Node):

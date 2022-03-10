@@ -1,7 +1,7 @@
-from modules.graph import Graph, nx, plt
-from modules.user_node import UserNode
-from modules.network_node import NetworkNode
-from modules.intermediary_node import IntermediaryNode
+from modules.BaseGraph import Graph, nx, plt
+from modules.UserNode import UserNode
+from modules.NetworkNode import NetworkNode
+from modules.IntermediaryNode import IntermediaryNode
 
 class BarabasiAlbert(Graph):
     """ Barabasi albert graph """

@@ -1,5 +1,5 @@
-from modules.graph import Graph, nx, plt
-from modules.user_node import UserNode
+from modules.BaseGraph import Graph, nx, plt
+from modules.UserNode import UserNode
 from Config import InputsConfig as p
 
 class WattsStrogatz(Graph):

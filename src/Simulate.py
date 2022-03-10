@@ -2,10 +2,10 @@ import math
 import logging
 from queue import Queue
 from numpy import random
-from modules.barabasi_albert import BarabasiAlbert
-from modules.types import NETWORK, INTERMEDIARY, USER
-from config import InputsConfig as p
-from modules.blockchain import BlockChain as bc
+from modules.BarabasiAlbert import BarabasiAlbert
+from modules.Types import NETWORK, INTERMEDIARY, USER
+from Config import InputsConfig as p
+from modules.Blockchain import BlockChain as bc
 
 LOGGING_FORMAT = "%(asctime)s: %(message)s"
 logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")

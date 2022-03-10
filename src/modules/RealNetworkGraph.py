@@ -1,6 +1,6 @@
 import requests
 from lxml import etree
-from .graph import Graph, nx, plt
+from .BaseGraph import Graph, nx, plt
 
 
 class RealNetworkGraph(Graph):
