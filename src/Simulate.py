@@ -23,6 +23,7 @@ class Simulate:
     graph = graphs[p.graph_type](**p.graph_params)
 
     def run():
+        logger.info("============= New run ===============")
         Simulate.add_init_balance(p.balance["mean"], p.balance["std"])
         Statistics.print_all_balances(Simulate.graph)
         eo.generate_events(Simulate.graph)
