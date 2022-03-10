@@ -6,6 +6,7 @@ from modules.Types import INTERMEDIARY
 from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
 from Statistics import Statistics
+from EventOrganizer import EventOrganizer as eo
 
 class IntermediaryNode(Node):
     """ Intermediary Node processes the blockchain """
@@ -52,8 +53,8 @@ class IntermediaryNode(Node):
     def get_funds_of_node(self, account_id):
         return bc.balance_of(account_id)
 
-    def tick(self):
-        """ Tick method of intermediary node """
+
+    def handle_fault(self):
         if self.is_online:
             if (poisson(1/p.intermediary_failure_rate)):
                 self.is_online = False
@@ -68,3 +69,7 @@ class IntermediaryNode(Node):
                 self.current_offline_ticks = 0
                 self.ticks_to_online = 0
 
+
+    def tick(self):
+        """ Tick method of intermediary node """
+        eo.add_event(self.handle_fault)

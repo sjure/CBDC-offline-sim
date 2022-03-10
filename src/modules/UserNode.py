@@ -5,6 +5,7 @@ from modules.BaseNode import Node
 from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p
+from EventOrganizer import EventOrganizer as eo
 
 class UserNode(Node):
     """ User node """
@@ -122,4 +123,4 @@ class UserNode(Node):
 
     def tick(self):
         if (random.random() <= self.tx_rate):
-            self.sim.add_event(self.do_transaction)
+            eo.add_event(self.do_transaction)

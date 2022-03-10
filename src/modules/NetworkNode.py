@@ -3,6 +3,7 @@ from modules.BaseNode import Node
 from modules.Types import NETWORK
 from Config import InputsConfig as p
 from Statistics import Statistics
+from EventOrganizer import EventOrganizer as eo
 
 class NetworkNode(Node):
     """ Network Node, the simulation of routers in the network"""
@@ -14,8 +15,7 @@ class NetworkNode(Node):
     def __init__(self, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
 
-    def tick(self) -> None:
-        """ The tick method of a router """
+    def handle_faults(self):
         if self.is_online:
             if (poisson(1/p.network_failure_rate)):
                 self.is_online = False
@@ -25,7 +25,9 @@ class NetworkNode(Node):
         else:
             self.current_offline_ticks += 1
             if (self.current_offline_ticks >= self.ticks_to_online):
-                self.is_online = True
-                print("network online")
                 self.current_offline_ticks = 0
                 self.ticks_to_online = 0
+
+    def tick(self) -> None:
+        """ The tick method of a router """
+        eo.add_event(self.handle_faults)
