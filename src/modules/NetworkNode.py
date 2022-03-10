@@ -2,6 +2,8 @@ from numpy.random import poisson, exponential
 from modules.BaseNode import Node
 from modules.Types import NETWORK
 from Config import InputsConfig as p
+from Statistics import Statistics
+
 class NetworkNode(Node):
     """ Network Node, the simulation of routers in the network"""
     is_online = True
@@ -19,6 +21,7 @@ class NetworkNode(Node):
                 self.is_online = False
                 print("network offline")
                 self.ticks_to_online = exponential(p.network_recovery_rate)
+                Statistics.network_failures += 1
         else:
             self.current_offline_ticks += 1
             if (self.current_offline_ticks >= self.ticks_to_online):

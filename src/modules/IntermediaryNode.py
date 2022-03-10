@@ -5,6 +5,7 @@ from modules.BaseNode import Node
 from modules.Types import INTERMEDIARY
 from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
+from Statistics import Statistics
 
 class IntermediaryNode(Node):
     """ Intermediary Node processes the blockchain """
@@ -56,6 +57,7 @@ class IntermediaryNode(Node):
                 self.is_online = False
                 print("intermediary offline")
                 self.ticks_to_online = exponential(p.intermediary_recovery_rate)
+                Statistics.intermediary_failures += 1
         else:
             self.current_offline_ticks += 1
             if (self.current_offline_ticks >= self.ticks_to_online):
