@@ -1,6 +1,7 @@
+from numpy.random import poisson
 from modules.node import Node
 from modules.types import NETWORK
-
+from config import InputsConfig as p
 class NetworkNode(Node):
     """ Network Node, the simulation of routers in the network"""
     is_online = True
@@ -11,3 +12,14 @@ class NetworkNode(Node):
 
     def tick(self) -> None:
         """ The tick method of a router """
+        if self.is_online:
+            failure_rate = p.network_failure_rate
+            if (poisson(1/failure_rate)):
+                self.is_online = False
+                print("network offline")
+        else:
+            if (poisson(1/p.network_recovery_rate)):
+                self.is_online = True
+                print("network online")
+
+

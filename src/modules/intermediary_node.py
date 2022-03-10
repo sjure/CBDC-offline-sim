@@ -1,8 +1,10 @@
 """ The intermediary Node """
 import operator
+from numpy.random import poisson
 from modules.node import Node
 from modules.types import INTERMEDIARY
 from modules.blockchain import BlockChain as bc
+from config import InputsConfig as p
 
 class IntermediaryNode(Node):
     """ Intermediary Node processes the blockchain """
@@ -46,4 +48,13 @@ class IntermediaryNode(Node):
         return bc.balance_of(account_id)
     
     def tick(self):
-        pass
+        """ Tick method of intermediary node """
+        if self.is_online:
+            if (poisson(1/p.intermediary_failure_rate)):
+                self.is_online = False
+                print("intermediary offline")
+        else:
+            if (poisson(1/p.intermediary_recovery_rate)):
+                self.is_online = True
+                print("intermediary online")
+

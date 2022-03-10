@@ -79,7 +79,7 @@ class UserNode(Node):
             payment = self.ow.pay(amount, address)
             payment_log = self.ow.get_payment_log()
             return True, payment, payment_log
-        return False, None
+        return False, None, []
 
     def approve_offline_transaction(self, amount, reciever):
         if (self.get_offline_balance() < amount):
