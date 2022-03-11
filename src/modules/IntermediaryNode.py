@@ -49,12 +49,13 @@ class IntermediaryNode(Node):
         
     
     def redeem_payments(self, payments):
-        logger.info(f"Redeem payemnts {payments}")
         payments.sort(key=operator.attrgetter("timestamp"), reverse=False)
+        logger.info(f"Redeem payemnts {payments}")
         for payment in payments:
             # Validate certificates
             # Validate payment with signature and certificate
-            self.add_transaction_to_bc(payment.sender,payment.sender,payment.amount)
+            if not bc.has_transaction(payment.tx.id):
+                bc.add_transaction_from_offline(payment.tx)
 
     def get_funds_of_node(self, account_id):
         return bc.balance_of(account_id)

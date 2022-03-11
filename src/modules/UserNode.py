@@ -72,8 +72,8 @@ class UserNode(Node):
         success, payment, payment_log = sender.offline_transaction(amount, self)
         if (success):
             Statistics.offline_tx += 1
-            Statistics.offline_tx_volume += payment.amount
-            logger.info(f"Offline transaction from {payment.sender} to {payment.reciever} amount {amount}")
+            Statistics.offline_tx_volume += payment.tx.amount
+            logger.info(f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
             self.ow.collect(payment)
             self.ow.sync_payment_log(payment_log)
         else:

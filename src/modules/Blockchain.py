@@ -1,6 +1,7 @@
 import hashlib
 import secrets
 import json
+import time
 
 class Block():
     """ Block """
@@ -13,7 +14,7 @@ class Block():
     def block(self):
         """ Returns the block object """
         return {
-            "tx": self.transactions,
+            "tx": [i.__dict__ for i in self.transactions],
             "height":self.height,
             "prev_hash":self.previous_block_hash
         }
@@ -28,6 +29,35 @@ class Block():
 
     def __repr__(self):
         return json.dumps(self.block())
+
+class Transaction():
+    """ Transaction """
+    def __init__(self, to_address, from_address, amount, ts):
+        self.to_address = to_address
+        self.from_address = from_address
+        self.amount = amount
+        self.ts = ts
+        self.id = self.create_id()
+    
+    def transaction(self):
+        """ Returns the transaction object """
+        return {
+            "to_address": self.to_address,
+            "from_address":self.from_address,
+            "amount":self.amount,
+            "ts":self.ts
+        }
+    
+    def create_id(self):
+        """ Returns the sha256 signature of the block """
+        block_string = json.dumps(self.transaction()).encode('utf-8')
+        return hashlib.sha256(block_string).hexdigest()
+
+    def __str__(self):
+        return json.dumps(self.transaction())
+
+    def __repr__(self):
+        return json.dumps(self.transaction())
 
 
 class BlockChain:
@@ -73,42 +103,51 @@ class BlockChain:
         balance = 0
         for block in BlockChain.blocks:
             for transaction in block.transactions:
-                if (transaction["to_address"] == address):
-                    balance += transaction["value"]
-                elif (transaction["from_address"] == address):
-                    balance -= transaction["value"]
+                if (transaction.to_address == address):
+                    balance += transaction.amount
+                elif (transaction.from_address == address):
+                    balance -= transaction.amount
         for transaction in BlockChain.queue:
-            if (transaction["to_address"] == address):
-                balance += transaction["value"]
-            elif (transaction["from_address"] == address):
-                balance -= transaction["value"]
+            if (transaction.to_address == address):
+                balance += transaction.amount
+            elif (transaction.from_address == address):
+                balance -= transaction.amount
         return balance
 
     def is_valid_transaction(from_address,value):
         balance_of_sender = BlockChain.balance_of(from_address)
         return value <= balance_of_sender
 
+    def add_transaction_from_offline(tx):
+        BlockChain.queue.append(tx)
+        BlockChain.check_trigger_new_block()
+        return True
+
     def add_transaction(to_address, from_address, value):
+        ts = int(time.time()*1e6)
         is_valid = BlockChain.is_valid_transaction(from_address, value)
         if not is_valid:
             return False
-        tx = {
-            "to_address":to_address,
-            "from_address":from_address,
-            "value":value
-        }
+        tx = Transaction(to_address, from_address,value,ts)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
         return True
     
     def deposit_money(address,value):
-        tx = {
-            "to_address":address,
-            "from_address":"",
-            "value":value
-        }
+        ts = int(time.time()*1e6)
+        tx = Transaction(address, "", value,ts)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
+    
+    def has_transaction(id):
+        for block in BlockChain.blocks:
+            for transaction in block.transactions:
+                if (transaction.id == id):
+                    return True
+        for transaction in BlockChain.queue:
+            if (transaction.id == id):
+                    return True
+        return False
 
     def get_n_of_transactions():
         sum = 0
