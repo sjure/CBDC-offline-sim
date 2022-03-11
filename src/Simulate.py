@@ -40,7 +40,7 @@ class Simulate:
             if (nodeData.type in [NETWORK,INTERMEDIARY]):
                 continue
             wallet_id = nodeData.account_id
-            wallet_amount = random.normal(mean,std)
+            wallet_amount = int(random.normal(mean,std))
             if (wallet_amount < 0):
                 wallet_amount = 0
             bc.deposit_money(wallet_id, wallet_amount)

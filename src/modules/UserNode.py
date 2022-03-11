@@ -19,7 +19,7 @@ class UserNode(Node):
         self.sim = sim
         self.tx_rate = p.tx_rate
         self.node_id = node_id
-        self.offline_target = max(random.normal(p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"]), 0)
+        self.offline_target = max(int(random.normal(p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"])), 0)
     
     def redeem_offline_transactions(self,intermediary):
         payments = self.ow.redeem_payments()
