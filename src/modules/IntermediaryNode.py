@@ -49,6 +49,7 @@ class IntermediaryNode(Node):
         
     
     def redeem_payments(self, payments):
+        logger.info(f"Redeem payemnts {payments}")
         payments.sort(key=operator.attrgetter("timestamp"), reverse=False)
         for payment in payments:
             # Validate certificates
