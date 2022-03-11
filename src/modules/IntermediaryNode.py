@@ -33,14 +33,17 @@ class IntermediaryNode(Node):
             return False
         Statistics.online_tx += 1
         Statistics.online_tx_volume += amount
+        logger.info(f"Online transaction from {payer_node_id} to {payee_node_id} amount {amount}")
         self.add_transaction_to_bc(payer_node.account_id,payee_node.account_id,amount)
 
     
     def offline_deposit(self, node, amount):
+        logger.info(f"Depost to offline wallet from {node.account_id} to {node.get_offline_address()} amount {amount}")
         self.add_transaction_to_bc(node.account_id,node.get_offline_address(),amount)
         return ""
 
     def offline_withdraw(self, node, amount, signature):
+        logger.info(f"Withdrawal from offline wallet from {node.account_id} to {node.get_offline_address()} amount {amount}")
         # Verify signature of Secure hardware deletion of funds
         return self.add_transaction_to_bc(node.get_offline_address(),node.account_id, amount)
         

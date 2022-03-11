@@ -30,6 +30,7 @@ class Simulate:
         logger.info(f"events {eo.event_queue.qsize()}")
         eo.event_organizer()
         Simulate.cleanup()
+        logger.info(bc.blocks)
         Statistics.print_all_balances(Simulate.graph)
         Statistics.print_state()
 
