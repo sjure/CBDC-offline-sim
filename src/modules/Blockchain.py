@@ -15,7 +15,7 @@ class Block():
     def block(self):
         """ Returns the block object """
         return {
-            "tx": [i.__dict__ for i in self.transactions],
+            "tx": [transaction.transaction() for transaction in self.transactions],
             "height":self.height,
             "prev_hash":self.previous_block_hash
         }
@@ -120,6 +120,10 @@ class BlockChain:
         return value <= balance_of_sender
 
     def add_transaction_from_offline(tx):
+        is_valid = BlockChain.is_valid_transaction(tx.from_address, tx.amount)
+        if not is_valid:
+            logger.error(f"ERROR: Invalid offline transaction to_address={tx.to_address} from_address={tx.from_address} value={tx.amount}")
+            return False
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
         return True

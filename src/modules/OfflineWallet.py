@@ -1,5 +1,6 @@
 import secrets
 import time
+import json
 import operator
 from modules.Blockchain import Transaction
 
@@ -10,6 +11,25 @@ class OfflinePayment():
         self.counter = counter
         self.signature = signature
         self.certificate = certificate
+    
+    def __str__(self):
+        tx = self.tx.transaction()
+        payment = {
+            "tx":tx,
+            "timestamp":self.timestamp,
+            "counter":self.counter,
+        }
+        return json.dumps(payment)
+
+    def __repr__(self):
+        tx = self.tx.transaction()
+        payment = {
+            "tx":tx,
+            "timestamp":self.timestamp,
+            "counter":self.counter,
+        }
+        return json.dumps(payment)
+
 
 
 class OfflineWallet():
