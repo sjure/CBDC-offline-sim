@@ -29,11 +29,7 @@ class Simulate:
         eo.generate_events(Simulate.graph)
         logger.info(f"events {eo.event_queue.qsize()}")
         eo.event_organizer()
-        online_balance, offline_balance = Statistics.get_sum_of_balances(Simulate.graph)
-        Statistics.online_money_after = online_balance
-        Statistics.offline_money_after = offline_balance
-        Statistics.total_money_after = online_balance + offline_balance
-        logger.info(f"All blocks authentic {bc.verify_block_chain()}")
+        Simulate.cleanup()
         Statistics.print_all_balances(Simulate.graph)
         Statistics.print_state()
 
@@ -51,6 +47,13 @@ class Simulate:
         Statistics.online_money_init = online_balance
         Statistics.offline_money_init = offline_balance
         Statistics.total_money_before = online_balance + offline_balance
+    
+    def cleanup():
+        online_balance, offline_balance = Statistics.get_sum_of_balances(Simulate.graph)
+        Statistics.online_money_after = online_balance
+        Statistics.offline_money_after = offline_balance
+        Statistics.total_money_after = online_balance + offline_balance
+        logger.info(f"All blocks authentic {bc.verify_block_chain()}")
 
 
 if __name__ == "__main__":
