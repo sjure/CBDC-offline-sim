@@ -2,7 +2,8 @@ import hashlib
 import secrets
 import json
 import time
-
+import logging
+logger = logging.getLogger("CBDCSimLog")
 class Block():
     """ Block """
     def __init__(self,transactions,height, previous_block_hash):
@@ -127,6 +128,7 @@ class BlockChain:
         ts = int(time.time()*1e6)
         is_valid = BlockChain.is_valid_transaction(from_address, value)
         if not is_valid:
+            logger.error(f"ERROR: Invalid transaction to_address={to_address} from_address={from_address} value={value}")
             return False
         tx = Transaction(to_address, from_address,value,ts)
         BlockChain.queue.append(tx)

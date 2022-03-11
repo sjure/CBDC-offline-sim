@@ -11,7 +11,7 @@ from modules.BarabasiAlbert import BarabasiAlbert
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
 logging.basicConfig(filename="log.log",format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("CBDCSimLog")
 
 graphs = {
     "ba": BarabasiAlbert,
