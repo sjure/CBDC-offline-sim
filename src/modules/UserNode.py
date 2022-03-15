@@ -137,7 +137,7 @@ class UserNode(Node):
             self.check_online()
             if (self.is_online):
                 self.trigger_reconnected(self.closest_intermediary)
-            self.init_deposit = Trueamount
+            self.init_deposit = True
     
 
     def check_online(self):
