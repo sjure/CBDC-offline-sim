@@ -54,11 +54,11 @@ class UserNode(Node):
             self.trigger_reconnected(intermediary)
         self.is_online = is_online
 
-    def approve_recieve_transaction(self,amount, receiver):
-        return True
+    def approve_recieve_offline_transaction(self,amount, receiver):
+        return not self.is_online
 
     def send_offline_transaction(self, amount, target):
-        target_accepts_transaction = target.approve_recieve_transaction(amount, self)
+        target_accepts_transaction = target.approve_recieve_offline_transaction(amount, self)
         if (target_accepts_transaction):
             success, payment, payment_log = self.create_offline_transaction(amount, self)
             if (success):
