@@ -20,23 +20,32 @@ class IntermediaryNode(Node):
     def __init__(self, sim=None, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
 
+    def _sign(self,tx):
+        signature = f"signed-transaction-{tx.id}-by-intermediary"
+        return tx, signature
+
     def add_transaction_to_bc(self, from_account,to_account,amount):
         if (self.get_funds_of_node(from_account) < amount):
             logger.error(f"ERROR, not enough funds {self.get_funds_of_node(from_account)}, {amount}")
-            return False
-        bc.add_transaction(to_account, from_account, amount)
+            return False, None, ""
+        if (amount <= 0):
+            logger.error(f"ERROR, value less than zero {self.get_funds_of_node(from_account)}, {amount}")
+            return False, None, ""
+        tx_confirmed = bc.add_transaction(to_account, from_account, amount)
+        tx, signature = self._sign(tx_confirmed)
+        return True, tx, signature 
 
     def send_transaction(self, payee_node_id, payer_node_id, amount):
         payer_node = self.graph.get_node(payer_node_id)
         payee_node = self.graph.get_node(payee_node_id)
-        if not payee_node.approve_transaction(payer_node_id, amount):
-            return False
         Statistics.online_tx += 1
         Statistics.online_tx_volume += amount
         logger.info(f"Online transaction from {payer_node_id} to {payee_node_id} amount {amount}")
-        self.add_transaction_to_bc(payer_node.account_id,payee_node.account_id,amount)
-
+        return self.add_transaction_to_bc(payer_node.account_id,payee_node.account_id,amount)
     
+    def is_valid_tx(self,account_id, amount):
+        return self.get_funds_of_node(account_id) >= amount
+
     def offline_deposit(self, node, amount):
         logger.info(f"Depost to offline wallet from {node.account_id} to {node.get_offline_address()} amount {amount}")
         self.add_transaction_to_bc(node.account_id,node.get_offline_address(),amount)
