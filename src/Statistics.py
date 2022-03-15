@@ -47,10 +47,10 @@ class Statistics:
 
 
     def print_money_supply():
-        print("".ljust(20) + "Value Before".ljust(20) + "Value After ".ljust(20))
-        print("Online".ljust(20) + str_ljust(Statistics.online_money_init) + str_ljust(Statistics.online_money_after))
-        print("Offline".ljust(20) + str_ljust(Statistics.offline_money_init) + str_ljust(Statistics.offline_money_after))
-        print("Sum".ljust(20) + str_ljust(Statistics.total_money_before) + str_ljust(Statistics.total_money_after))
+        print("".ljust(20) + "Value Before".ljust(20) + "Value After ".ljust(20)+ "Diff ".ljust(20))
+        print("Online".ljust(20) + str_ljust(Statistics.online_money_init) + str_ljust(Statistics.online_money_after)+ str_ljust(Statistics.online_money_after - Statistics.online_money_init))
+        print("Offline".ljust(20) + str_ljust(Statistics.offline_money_init) + str_ljust(Statistics.offline_money_after) + str_ljust(Statistics.offline_money_after - Statistics.offline_money_init))
+        print("Sum".ljust(20) + str_ljust(Statistics.total_money_before) + str_ljust(Statistics.total_money_after) + str_ljust(Statistics.total_money_after - Statistics.total_money_before))
 
     def get_sum_of_balances(graph):
         sum_of_online = 0
