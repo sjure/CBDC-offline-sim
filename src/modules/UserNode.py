@@ -87,9 +87,13 @@ class UserNode(Node):
         self.check_online()
         target.check_online()
         if (self.is_online and target.is_online):
+            if (self.balance < amount):
+                return
             # Do online transaction, both users can check the validity in the intermediary
             self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
         elif (self.is_online and not target.is_online):
+            if (self.balance < amount):
+                return
             is_valid, tx, sign = self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
             if (is_valid):
                 target.recieve_confirmation(tx,sign)
@@ -145,6 +149,7 @@ class UserNode(Node):
         self.is_online = has_connection_to_intermediary
         self.closest_intermediary = intermediary
         self.update_connectivity(has_connection_to_intermediary, intermediary)
+        self.balance = intermediary.get_funds_of_node(self.account_id)
 
     def get_balance(self):
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
