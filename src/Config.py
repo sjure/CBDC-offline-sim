@@ -1,6 +1,6 @@
 class InputsConfig:
     """ Input config for the module """
-    tx_limit = 1000
+    tx_limit = 100
     tx_per_node = 200
     graph_type = "ba"
     graph_params = {
