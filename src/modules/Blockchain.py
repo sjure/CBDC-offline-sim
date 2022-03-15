@@ -106,12 +106,12 @@ class BlockChain:
             for transaction in block.transactions:
                 if (transaction.to_address == address):
                     balance += transaction.amount
-                elif (transaction.from_address == address):
+                if (transaction.from_address == address):
                     balance -= transaction.amount
         for transaction in BlockChain.queue:
             if (transaction.to_address == address):
                 balance += transaction.amount
-            elif (transaction.from_address == address):
+            if (transaction.from_address == address):
                 balance -= transaction.amount
         return balance
 
@@ -166,6 +166,8 @@ if __name__ == "__main__":
     bc = BlockChain
     bc.deposit_money("sjur", 100)
     bc.add_transaction("dennis","sjur",1)
+    bc.add_transaction("sjur","sjur",99)
     print(bc.blocks)
+    print(bc.queue)
     print(bc.balance_of("dennis"))
     print(bc.balance_of("sjur"))
