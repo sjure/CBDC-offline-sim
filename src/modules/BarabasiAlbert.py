@@ -8,7 +8,7 @@ from Config import InputsConfig as p
 
 def get_new_node(node_id,graph):
     if random() > p.fraud_node_percentage:
-            return UserNode(node_id=node_id, graph=graph)
+        return UserNode(node_id=node_id, graph=graph)
     else:
         return FraudUserNode(node_id=node_id, graph=graph)
 
