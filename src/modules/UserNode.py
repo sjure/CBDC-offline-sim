@@ -17,7 +17,6 @@ class UserNode(Node):
     type = USER
     def __init__(self, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
-        self.tx_rate = p.tx_rate
         self.node_id = node_id
         self.offline_target = max(int(random.normal(p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"])), 0)
 
@@ -152,5 +151,5 @@ class UserNode(Node):
         return False, 0
 
     def tick(self):
-        if (random.random() <= self.tx_rate):
+        if (random.poisson(1/p.tx_rate)):
             eo.add_event(self.do_transaction)
