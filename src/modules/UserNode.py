@@ -149,7 +149,8 @@ class UserNode(Node):
         self.is_online = has_connection_to_intermediary
         self.closest_intermediary = intermediary
         self.update_connectivity(has_connection_to_intermediary, intermediary)
-        self.balance = intermediary.get_funds_of_node(self.account_id)
+        if (has_connection_to_intermediary):
+            self.balance = intermediary.get_funds_of_node(self.account_id)
 
     def get_balance(self):
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
