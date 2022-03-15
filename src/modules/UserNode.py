@@ -65,7 +65,7 @@ class UserNode(Node):
             return False
         target_accepts_transaction = target.approve_recieve_offline_transaction(self, amount)
         if (target_accepts_transaction):
-            success, payment, payment_log = self.create_offline_transaction(amount, self)
+            success, payment, payment_log = self.create_offline_transaction(amount, target)
             if (success):
                 Statistics.offline_tx += 1
                 Statistics.offline_tx_volume += payment.tx.amount
