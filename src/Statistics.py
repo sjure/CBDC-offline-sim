@@ -14,10 +14,10 @@ class Statistics:
     offline_tx_volume = 0
 
     # Fraud tx data
-    fradulent_tx_successes = 0
-    fradulent_tx_failures = 0
-    fradulent_tx_success_volume = 0
-    fradulent_tx_failures_volume = 0
+    fradulent_tx_detected = 0
+    fradulent_tx_detected_volume = 0
+    fradulent_tx_sent = 0
+    fradulent_tx_sent_volume = 0
 
     # HW failures
     network_failures = 0
@@ -40,10 +40,10 @@ class Statistics:
             str_ljust(Statistics.offline_tx) + str_ljust(Statistics.offline_tx_volume))
 
     def print_fraud():
-        print("Fraud Success".ljust(40) + "Fraud Failure".ljust(40))
+        print("Fraud Sendt".ljust(40) + "Fraud Detected".ljust(40))
         print("Tx".ljust(20) + "Volume".ljust(20) + "Tx".ljust(20) + "Volume".ljust(20))
-        print(str_ljust(Statistics.fradulent_tx_successes) + str_ljust(Statistics.fradulent_tx_success_volume) + 
-            str_ljust(Statistics.fradulent_tx_failures) + str_ljust(Statistics.fradulent_tx_failures_volume))
+        print(str_ljust(Statistics.fradulent_tx_sent) + str_ljust(Statistics.fradulent_tx_sent_volume) + 
+            str_ljust(Statistics.fradulent_tx_detected) + str_ljust(Statistics.fradulent_tx_detected_volume))
 
 
     def print_money_supply():
