@@ -61,6 +61,8 @@ class UserNode(Node):
             return True
 
     def send_offline_transaction(self, amount, target):
+        if amount <= 0:
+            return False
         target_accepts_transaction = target.approve_recieve_offline_transaction(self, amount)
         if (target_accepts_transaction):
             success, payment, payment_log = self.create_offline_transaction(amount, self)
@@ -135,7 +137,7 @@ class UserNode(Node):
             self.check_online()
             if (self.is_online):
                 self.trigger_reconnected(self.closest_intermediary)
-            self.init_deposit = True
+            self.init_deposit = Trueamount
     
 
     def check_online(self):
