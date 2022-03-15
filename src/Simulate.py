@@ -9,7 +9,7 @@ from Statistics import Statistics
 from modules.BarabasiAlbert import BarabasiAlbert
 
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
-logging.basicConfig(filename="log.log",format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S")
+logging.basicConfig(filename="log.log",format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S", filemode='w',)
 
 logger = logging.getLogger("CBDCSimLog")
 
