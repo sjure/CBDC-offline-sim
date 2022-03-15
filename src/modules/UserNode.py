@@ -69,8 +69,8 @@ class UserNode(Node):
                 Statistics.offline_tx += 1
                 Statistics.offline_tx_volume += payment.tx.amount
                 logger.info(f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
-                self.ow.collect(payment)
-                self.ow.sync_payment_log(payment_log)
+                target.ow.collect(payment)
+                target.ow.sync_payment_log(payment_log)
             else:
                 logger.info(f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
         else:
