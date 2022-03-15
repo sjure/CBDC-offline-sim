@@ -59,7 +59,7 @@ class Statistics:
             node = graph.get_node(node_id)
             online_balance = bc.balance_of(node.account_id)
             sum_of_online += online_balance
-            if node.type == USER:
+            if node.type in [USER, FRAUD_USER]:
                 offline_bal = bc.balance_of(node.get_offline_address())
                 sum_of_offline += offline_bal
         return sum_of_online, sum_of_offline
