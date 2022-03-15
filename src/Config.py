@@ -1,13 +1,13 @@
 class InputsConfig:
     """ Input config for the module """
-    tx_limit = 20
+    tx_limit = 1000
+    tx_per_node = 200
     graph_type = "ba"
     graph_params = {
         "n":10,
         "m":3,
     }
     fraud_node_percentage = 0.1
-    tx_per_node = 20
     tx_rate = 5
     tx_rate_fraud = 2
     tx_volume={ 

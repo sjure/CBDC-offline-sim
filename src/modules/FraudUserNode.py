@@ -33,7 +33,7 @@ class FraudUserNode(UserNode):
         success = self.send_offline_transaction(amount, target)
         if (success):
             balance = self.init_balance - self.money_sent
-            logger.info(f"balance {balance}")
+            logger.info(f"{self.node_id} {self.ow.account_id} balance {balance}, sending {amount}")
             if (amount > balance):
                 if (balance <= 0):
                     Statistics.fradulent_tx_sent += 1
