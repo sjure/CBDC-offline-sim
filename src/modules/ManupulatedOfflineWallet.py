@@ -6,6 +6,9 @@ from modules.Blockchain import Transaction
 from modules.OfflineWallet import OfflinePayment, OfflineWallet
 
 class ManipulatedOfflineWallet(OfflineWallet):
+    def __init__(self):
+        """ Tampered wallet """
+        super().__init__()
 
     def pay(self, amount, reciever):
         """Creates an offine payment object."""
