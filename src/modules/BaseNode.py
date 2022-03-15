@@ -31,6 +31,12 @@ class Node(ABC):
         self.network_neighbors = network_neighbors
         self.neighbors = neighbors
 
+    def __str__(self):
+        return f"Node {self.node_id}"
+    
+    def __repr__(self):
+        return self.__str__()
+
     @abstractmethod
     def tick(self) -> None:
         """ Tick funcktion to be called for each loop in the simulation"""
