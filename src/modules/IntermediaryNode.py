@@ -60,7 +60,7 @@ class IntermediaryNode(Node):
     
     def fraud_payment_detected(self,tx):
         if (tx not in self.fradulent_transactions):
-            logger.error(f"ERROR: Fradulent payemnt logged amount={tx.amount} {tx.from_address}")
+            logger.error(f"ERROR: Fradulent payment logged amount={tx.amount} {tx.from_address}")
             self.fradulent_transactions.append(tx)
             if (tx.from_address not in self.fraud_users.keys()):
                 self.fraud_users[tx.from_address] = tx.amount
