@@ -33,21 +33,23 @@ class FraudUserNode(UserNode):
         success = self.send_offline_transaction(amount, target)
         if (success):
             balance = self.init_balance - self.money_sent
-            if (balance <= 0):
-                Statistics.fradulent_tx_sent += 1
-                Statistics.fradulent_tx_sent_volume += amount
-            elif (amount > balance):
-                Statistics.fradulent_tx_sent += 1
-                Statistics.fradulent_tx_sent_volume += balance - amount
+            logger.info(f"balance {balance}")
+            if (amount > balance):
+                if (balance <= 0):
+                    Statistics.fradulent_tx_sent += 1
+                    Statistics.fradulent_tx_sent_volume += amount
+                else:
+                    Statistics.fradulent_tx_sent += 1
+                    Statistics.fradulent_tx_sent_volume += amount - balance
             self.money_sent += amount
-    
+
     def do_transaction(self):
         self.send_money()
         if (not self.init_deposit):
             self.check_online()
             if (self.is_online):
                 self.trigger_reconnected(self.closest_intermediary)
-            success, balance = self.get_balance()
+            balance = self.ow.get_balance()
             self.init_balance = balance
             self.init_deposit = True
             self.is_online = False
