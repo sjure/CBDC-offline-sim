@@ -16,6 +16,8 @@ class IntermediaryNode(Node):
     ticks_to_online = 0
     current_offline_ticks = 0
     type = INTERMEDIARY
+    fradulent_transactions = []
+    fraud_users = {}
 
     def __init__(self, sim=None, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
@@ -55,7 +57,18 @@ class IntermediaryNode(Node):
         logger.info(f"Withdrawal from offline wallet from {node.account_id} to {node.get_offline_address()} amount {amount}")
         # Verify signature of Secure hardware deletion of funds
         return self.add_transaction_to_bc(node.get_offline_address(),node.account_id, amount)
-        
+    
+    def fraud_payment_detected(self,tx):
+        if (tx not in self.fradulent_transactions):
+            logger.error(f"Fradulent payemnt logged")
+            self.fradulent_transactions.append(tx)
+            if (tx.from_address not in self.fraud_users.keys()):
+                self.fraud_users[tx.from_address] = tx.amount
+            else:
+                self.fraud_users[tx.from_address] += tx.amount
+            Statistics.fradulent_tx_detected += 1
+            Statistics.fradulent_tx_detected_volume += tx.amount
+
     
     def redeem_payments(self, payments):
         payments.sort(key=operator.attrgetter("timestamp"), reverse=False)
@@ -64,7 +77,9 @@ class IntermediaryNode(Node):
             # Validate certificates
             # Validate payment with signature and certificate
             if not bc.has_transaction(payment.tx.id):
-                bc.add_transaction_from_offline(payment.tx)
+                successfull_add = bc.add_transaction_from_offline(payment.tx)
+                if not successfull_add:
+                    self.fraud_payment_detected(payment.tx)
 
     def get_funds_of_node(self, account_id):
         return bc.balance_of(account_id)
