@@ -41,6 +41,7 @@ class Simulate:
     def add_init_balance(mean,std):
         for node in Simulate.graph.nodes():
             nodeData = Simulate.graph.get_node(node)
+            logger.info(nodeData)
             if (nodeData.type in [NETWORK,INTERMEDIARY]):
                 continue
             wallet_id = nodeData.account_id
