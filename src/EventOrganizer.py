@@ -24,7 +24,7 @@ class EventOrganizer:
     
     def generate_events(graph):
         nodes = graph.nodes()
-        loops = math.floor(p.tx_per_node/ p.tx_rate)
+        loops = math.floor(p.tx_per_node*p.tx_rate)
         node_count = len(nodes)
         print("loops",loops)
         print("nodes",node_count)
