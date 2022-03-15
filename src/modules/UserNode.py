@@ -71,11 +71,12 @@ class UserNode(Node):
                 logger.info(f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
                 target.ow.collect(payment)
                 target.ow.sync_payment_log(payment_log)
+                return True
             else:
                 logger.info(f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
         else:
             logger.info(f"Target did not accept transaction target={target.get_offline_address()} amount={amount} from={self.get_offline_address()}")
-
+        return False
 
     def send_money(self):
         """ request money"""
