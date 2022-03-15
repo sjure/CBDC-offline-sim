@@ -26,10 +26,10 @@ class IntermediaryNode(Node):
             return False
         bc.add_transaction(to_account, from_account, amount)
 
-    def request_transaction(self, payee_node_id, payer_node_id, amount):
+    def send_transaction(self, payee_node_id, payer_node_id, amount):
         payer_node = self.graph.get_node(payer_node_id)
         payee_node = self.graph.get_node(payee_node_id)
-        if not payer_node.approve_transaction(payee_node_id, amount):
+        if not payee_node.approve_transaction(payer_node_id, amount):
             return False
         Statistics.online_tx += 1
         Statistics.online_tx_volume += amount
@@ -66,7 +66,8 @@ class IntermediaryNode(Node):
             if (poisson(1/p.intermediary_failure_rate)):
                 self.is_online = False
                 logger.info("intermediary -> offline")
-                self.ticks_to_online = exponential(p.intermediary_recovery_rate)
+                self.ticks_to_online = int(exponential(p.intermediary_recovery_rate))
+                logger.info(f"{self.ticks_to_online} ticks to online")
                 Statistics.intermediary_failures += 1
         else:
             self.current_offline_ticks += 1

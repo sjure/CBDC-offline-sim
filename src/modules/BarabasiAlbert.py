@@ -8,7 +8,7 @@ class BarabasiAlbert(Graph):
     def __init__(self, n=100, m=3,**attr):
         super().__init__(**attr)
         g = nx.barabasi_albert_graph(n, m, seed=self.seed)
-        new_nodes = [(i,dict(data=UserNode(node_id=i, sim=self.sim,graph=self))) for i in g.nodes]
+        new_nodes = [(i,dict(data=UserNode(node_id=i, graph=self))) for i in g.nodes]
         self.add_nodes_from(new_nodes)
         self.add_edges_from(g.edges)
         network_nodes = [(1000,dict(data=NetworkNode(node_id=1000,graph=self)))]

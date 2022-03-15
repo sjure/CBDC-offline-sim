@@ -22,7 +22,8 @@ class NetworkNode(Node):
             if (poisson(1/p.network_failure_rate)):
                 self.is_online = False
                 logger.info("network -> offline")
-                self.ticks_to_online = exponential(p.network_recovery_rate)
+                self.ticks_to_online = int(exponential(p.network_recovery_rate))
+                logger.info(f"{self.ticks_to_online} ticks to online")
                 Statistics.network_failures += 1
         else:
             self.current_offline_ticks += 1
