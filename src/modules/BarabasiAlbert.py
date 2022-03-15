@@ -1,14 +1,23 @@
+from numpy.random import random
 from modules.BaseGraph import Graph, nx, plt
+from modules.FraudUserNode import FraudUserNode
 from modules.UserNode import UserNode
 from modules.NetworkNode import NetworkNode
 from modules.IntermediaryNode import IntermediaryNode
+from Config import InputsConfig as p
+
+def get_new_node(node_id,graph):
+    if random() > p.fraud_node_percentage:
+            return UserNode(node_id=node_id, graph=graph)
+    else:
+        return FraudUserNode(node_id=node_id, graph=graph)
 
 class BarabasiAlbert(Graph):
     """ Barabasi albert graph """
     def __init__(self, n=100, m=3,**attr):
         super().__init__(**attr)
         g = nx.barabasi_albert_graph(n, m, seed=self.seed)
-        new_nodes = [(i,dict(data=UserNode(node_id=i, graph=self))) for i in g.nodes]
+        new_nodes = [(i,dict(data=get_new_node(i,self))) for i in g.nodes]
         self.add_nodes_from(new_nodes)
         self.add_edges_from(g.edges)
         network_nodes = [(1000,dict(data=NetworkNode(node_id=1000,graph=self)))]
