@@ -7,8 +7,8 @@ class InputsConfig:
         "m":3,
     }
     fraud_node_percentage = 0.1
-    tx_per_node= 20
-    tx_rate= 5
+    tx_per_node = 20
+    tx_rate = 5
     tx_rate_fraud = 2
     tx_volume={ 
         "mean": 10,
@@ -23,7 +23,7 @@ class InputsConfig:
         "std": 500
     }
     fraud_user_balance_preferance = {
-        "mean": 1000000000,
+        "mean": 10e12,
         "std": 0
     }
     network_failure_rate = 10
