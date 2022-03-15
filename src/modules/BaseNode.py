@@ -6,6 +6,7 @@ class Node(ABC):
     """ Node object to use in the graph """
     neighbors = []
     network_neighbors = []
+    type = None
     def __init__(self, graph=None, node_id=-1):
         self.graph = graph
         self.node_id = node_id
@@ -32,7 +33,7 @@ class Node(ABC):
         self.neighbors = neighbors
 
     def __str__(self):
-        return f"Node {self.node_id}"
+        return f"{self.type} Node {self.node_id} account_id={self.account_id} offline_account_id={self.ow.account_id}"
     
     def __repr__(self):
         return self.__str__()
