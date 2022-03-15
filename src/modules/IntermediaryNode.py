@@ -28,7 +28,7 @@ class IntermediaryNode(Node):
 
     def add_transaction_to_bc(self, from_account,to_account,amount):
         if (self.get_funds_of_node(from_account) < amount):
-            logger.error(f"ERROR, not enough funds {self.get_funds_of_node(from_account)}, {amount}")
+            logger.error(f"ERROR, not enough funds {from_account} {self.get_funds_of_node(from_account)}, {amount}")
             return False, None, ""
         if (amount <= 0):
             logger.error(f"ERROR, value less than zero {self.get_funds_of_node(from_account)}, {amount}")
@@ -37,7 +37,7 @@ class IntermediaryNode(Node):
         tx, signature = self._sign(tx_confirmed)
         return True, tx, signature 
 
-    def send_transaction(self, payee_node_id, payer_node_id, amount):
+    def send_transaction(self, payer_node_id, payee_node_id, amount):
         payer_node = self.graph.get_node(payer_node_id)
         payee_node = self.graph.get_node(payee_node_id)
         Statistics.online_tx += 1
