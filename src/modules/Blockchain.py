@@ -137,7 +137,7 @@ class BlockChain:
         tx = Transaction(to_address, from_address,value,ts)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
-        return True
+        return tx
     
     def deposit_money(address,value):
         ts = int(time.time()*1e6)
