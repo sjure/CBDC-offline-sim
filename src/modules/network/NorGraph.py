@@ -32,7 +32,7 @@ class NorGraph(Graph):
             city = un.nodes[node]["label"]
             mesh = MakeMesh(city)
             new_nodes = [(i,dict(data=get_new_node(i,self))) for i in mesh.nodes]
-            new_network_nodes = [(i,dict(data=get_network_node(i,self))) for i in mesh.routers_tier_2]
+            new_network_nodes = [(i,dict(data=get_network_node(i,self))) for i in mesh.t2]
             self.add_nodes_from(new_nodes)
             self.add_nodes_from(new_network_nodes)
             self.add_edges_from(mesh.graph.edges())
