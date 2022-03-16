@@ -1,14 +1,20 @@
+from pickle import FALSE
 import requests
 from lxml import etree
-from .BaseGraph import Graph, nx, plt
+from modules.BaseGraph import Graph, nx, plt
 
+ONLINE = FALSE
+URL = "http://www.topology-zoo.org/files/Uninett2011.graphml"
 
 class RealNetworkGraph(Graph):
 
-    def __init__(self, url: str, **attr):
+    def __init__(self, **attr):
         super().__init__(**attr)
-        r = requests.get(url)
-        tree = etree.XML(r.content)
+        if (ONLINE):
+            XML_TO_PARSE = self.get_graph_from_url(URL)
+        else:
+            XML_TO_PARSE = self.get_graph_from_xml()
+        tree = etree.XML(XML_TO_PARSE)
         graph = tree.find("{http://graphml.graphdrawing.org/xmlns}graph")
         nodes = graph.findall("{http://graphml.graphdrawing.org/xmlns}node")
         edges = graph.findall("{http://graphml.graphdrawing.org/xmlns}edge")
@@ -23,6 +29,15 @@ class RealNetworkGraph(Graph):
 
     def _init_edges(self):
         self.add_edges_from(self.graph_edges)
+
+    def get_graph_from_url(self,url):
+        r = requests.get(url)
+        return r.content
+
+    def get_graph_from_xml(self):
+        with open("assets/uninet.xml","rb") as f:
+            xml = f.raw()
+        return xml
 
     def draw(
             self,
@@ -56,5 +71,6 @@ class RealNetworkGraph(Graph):
 
 
 if __name__ == '__main__':
-    rn = RealNetworkGraph("http://www.topology-zoo.org/files/Uninett2011.graphml")
+    rn = RealNetworkGraph()
+    print(rn.nodes())
     rn.draw()
