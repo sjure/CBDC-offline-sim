@@ -1,11 +1,10 @@
-from pickle import FALSE
 import requests
 from lxml import etree
 from modules.network.BaseGraph import Graph, nx, plt
 
-ONLINE = FALSE
+ONLINE = False
 URL = "http://www.topology-zoo.org/files/Uninett2011.graphml"
-PATH = "assets/uninet-2011.xml"
+PATH = "assets/graphs/uninet-2011.xml"
 
 class UninetGraph(Graph):
 
@@ -37,7 +36,7 @@ class UninetGraph(Graph):
 
     def get_graph_from_xml(self):
         with open(PATH,"rb") as f:
-            xml = f.raw()
+            xml = f.read()
         return xml
 
     def draw(
