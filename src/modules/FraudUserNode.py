@@ -20,7 +20,7 @@ class FraudUserNode(UserNode):
         super().__init__(node_id=node_id, **attr)
         self.offline_target = max(int(random.normal(p.fraud_user_balance_preferance["mean"], p.fraud_user_balance_preferance["std"])), 0)
         self.ow = ManipulatedOfflineWallet()
-
+        self.tx_rate = p.tx_rate_fraud
 
     def approve_recieve_offline_transaction(self,payer_node, amount):
         return True
@@ -53,15 +53,3 @@ class FraudUserNode(UserNode):
             self.init_balance = balance
             self.init_deposit = True
             self.is_online = False
-    
-    def check_online(self):
-        if (not self.init_deposit):
-            has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
-            self.is_online = has_connection_to_intermediary
-            self.closest_intermediary = intermediary
-            self.update_connectivity(has_connection_to_intermediary, intermediary)
-        return True
-
-    def tick(self):
-        if (random.poisson(1/p.tx_rate_fraud)):
-            eo.add_event(self.do_transaction)
