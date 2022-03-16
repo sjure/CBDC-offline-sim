@@ -5,6 +5,7 @@ from modules.BaseGraph import Graph, nx, plt
 
 ONLINE = FALSE
 URL = "http://www.topology-zoo.org/files/Uninett2011.graphml"
+PATH = "assets/uninet-2011.xml"
 
 class RealNetworkGraph(Graph):
 
@@ -35,7 +36,7 @@ class RealNetworkGraph(Graph):
         return r.content
 
     def get_graph_from_xml(self):
-        with open("assets/uninet.xml","rb") as f:
+        with open(PATH,"rb") as f:
             xml = f.raw()
         return xml
 
