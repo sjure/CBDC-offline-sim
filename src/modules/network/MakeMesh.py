@@ -23,8 +23,8 @@ class MakeMesh():
         self.nodes = subnet.nodes
         self.graph = subnet.graph
 
-    def make_mesh():
-        prefix = prefix + "_"
+    def make_mesh(self):
+        prefix = self.prefix + "_"
         ba = nx.barabasi_albert_graph(NODES,3)
         ba_nodes = [prefix + str(i) for i in ba.nodes()]
         routers_tier_2 = [prefix + str(i) for i in range(ROUTER_TIER_2_NODE_PREFIX,ROUTER_TIER_2_NODE_PREFIX + ROUTERS_TIER_2)]
