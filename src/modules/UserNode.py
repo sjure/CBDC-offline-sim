@@ -19,6 +19,7 @@ class UserNode(Node):
         super().__init__(node_id=node_id, **attr)
         self.node_id = node_id
         self.offline_target = max(int(random.normal(p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"])), 0)
+        self.tx_rate = p.tx_rate
 
     def redeem_offline_transactions(self,intermediary):
         payments = self.ow.redeem_payments()
@@ -152,5 +153,5 @@ class UserNode(Node):
         if (not self.init_deposit):
             eo.add_event(self.check_online)
             self.init_deposit = True
-        if (random.poisson(1/p.tx_rate)):
+        if (random.poisson(1/self.tx_rate)):
             eo.add_event(self.do_transaction)

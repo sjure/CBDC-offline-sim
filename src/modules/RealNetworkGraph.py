@@ -12,7 +12,7 @@ class RealNetworkGraph(Graph):
         graph = tree.find("{http://graphml.graphdrawing.org/xmlns}graph")
         nodes = graph.findall("{http://graphml.graphdrawing.org/xmlns}node")
         edges = graph.findall("{http://graphml.graphdrawing.org/xmlns}edge")
-        self.graph_nodes = [{"id": n.attrib["id"], "label": n.getchildren()[-1].text} for n in nodes]
+        self.graph_nodes = [{"id": n.attrib["id"], "label": n.getchildren()[-1].text.replace(" ","_")} for n in nodes]
         self.graph_edges = [(e.attrib["source"], e.attrib["target"]) for e in edges]
         self._init_nodes()
         self._init_edges()
