@@ -9,7 +9,7 @@ class InputsConfig:
     }
     fraud_node_percentage = 0.1
     tx_rate = 5
-    tx_rate_fraud = 2
+    tx_rate_fraud = 5
     tx_volume={ 
         "mean": 10,
         "std": 10
@@ -26,7 +26,7 @@ class InputsConfig:
         "mean": 10e12,
         "std": 0
     }
-    network_failure_rate = 10
+    network_failure_rate = 20
     network_recovery_rate = 5
     intermediary_failure_rate = 20
     intermediary_recovery_rate = 5
