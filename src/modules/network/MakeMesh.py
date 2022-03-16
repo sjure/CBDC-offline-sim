@@ -1,4 +1,6 @@
 import networkx as nx
+import logging
+logger = logging.getLogger("CBDCSimLog")
 
 ROUTER_TIER_2_NODE_PREFIX = 1_000_000
 ROUTER_TIER_1_NODE_PREFIX = 1_000_000_000
@@ -30,7 +32,7 @@ class MakeMesh():
         routers_tier_2 = [prefix + str(i) for i in range(ROUTER_TIER_2_NODE_PREFIX,ROUTER_TIER_2_NODE_PREFIX + ROUTERS_TIER_2)]
         routers_tier_1 = [prefix + str(ROUTER_TIER_1_NODE_PREFIX)]
         nodes_per_partition = int(NODES*AVERAGE_ROUTERS_PER_NODE/ROUTERS_TIER_2)
-        print(f"Nodes per partition {nodes_per_partition}")
+        logger.info(f"Nodes per partition {nodes_per_partition}")
         partitions = []
         for i in range(ROUTERS_TIER_2):
             if (i ==0):
@@ -47,14 +49,14 @@ class MakeMesh():
             range_start = max(min(range_start,NODES-1),0)
             range_end = min(range_end,NODES-1)
             partitions.append((range_start,range_end))
-        print(partitions)
+        logger.info(f"Network partitions {partitions}")
         edges =[]
         for router_index, part in enumerate(partitions):
             node_id_start, node_id_end = part
             for node_id in range(node_id_start,node_id_end+1):
                 edges.append((ROUTER_TIER_2_NODE_PREFIX + router_index,node_id))
 
-        #edges = edges + list(ba.edges())
+        edges = edges + list(ba.edges())
         edges = [(prefix + str(i), prefix + str(j)) for i,j in edges]
         for router_2 in routers_tier_2:
             for router_1 in routers_tier_1:
