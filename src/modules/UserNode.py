@@ -53,6 +53,7 @@ class UserNode(Node):
         if (was_offline and is_online):
             self.trigger_reconnected(intermediary)
         self.is_online = is_online
+        self.closest_intermediary = intermediary
 
     def approve_recieve_offline_transaction(self,payer_node, amount):
         if (self.is_online):
@@ -131,23 +132,12 @@ class UserNode(Node):
         return bfs_to_intermediary(self)
     
     def do_transaction(self):
-        # Get closest intermediary only transiting routers
-        # Get nearby user to give money
-        # Send money, amount = 
-
-        #print(f"transaction {self.id}")
+        """ Do transaction as main method of the user node """
         self.send_money()
-        if (not self.init_deposit):
-            self.check_online()
-            if (self.is_online):
-                self.trigger_reconnected(self.closest_intermediary)
-            self.init_deposit = True
     
 
     def check_online(self):
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
-        self.is_online = has_connection_to_intermediary
-        self.closest_intermediary = intermediary
         self.update_connectivity(has_connection_to_intermediary, intermediary)
         if (has_connection_to_intermediary):
             self.balance = intermediary.get_funds_of_node(self.account_id)
@@ -159,5 +149,8 @@ class UserNode(Node):
         return False, 0
 
     def tick(self):
+        if (not self.init_deposit):
+            eo.add_event(self.check_online)
+            self.init_deposit = True
         if (random.poisson(1/p.tx_rate)):
             eo.add_event(self.do_transaction)
