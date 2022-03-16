@@ -7,7 +7,7 @@ ONLINE = FALSE
 URL = "http://www.topology-zoo.org/files/Uninett2011.graphml"
 PATH = "assets/uninet-2011.xml"
 
-class RealNetworkGraph(Graph):
+class UninetGraph(Graph):
 
     def __init__(self, **attr):
         super().__init__(**attr)
@@ -72,6 +72,6 @@ class RealNetworkGraph(Graph):
 
 
 if __name__ == '__main__':
-    rn = RealNetworkGraph()
+    rn = UninetGraph()
     print(rn.nodes())
     rn.draw()
