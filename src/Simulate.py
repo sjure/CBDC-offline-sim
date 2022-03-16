@@ -7,6 +7,8 @@ from modules.Blockchain import BlockChain as bc
 from EventOrganizer import EventOrganizer as eo
 from Statistics import Statistics
 from modules.network.BarabasiAlbert import BarabasiAlbert
+from modules.network.NorGraph import NorGraph
+
 
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
 logging.basicConfig(filename="log.log",format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S", filemode='w',)
@@ -15,6 +17,7 @@ logger = logging.getLogger("CBDCSimLog")
 
 graphs = {
     "ba": BarabasiAlbert,
+    "no": NorGraph,
 }
 
 class Simulate:
