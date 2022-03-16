@@ -2,7 +2,7 @@ import math
 import logging
 from numpy import random
 from Statistics import Statistics
-from modules.BaseNode import Node
+from modules.nodes.BaseNode import Node
 from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p

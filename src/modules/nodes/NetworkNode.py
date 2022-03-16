@@ -1,6 +1,6 @@
 import logging
 from numpy.random import poisson, exponential
-from modules.BaseNode import Node
+from modules.nodes.BaseNode import Node
 from modules.Types import NETWORK
 from Config import InputsConfig as p
 from Statistics import Statistics

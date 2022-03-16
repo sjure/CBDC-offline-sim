@@ -1,9 +1,9 @@
 from numpy.random import random
-from modules.BaseGraph import Graph, nx, plt
-from modules.FraudUserNode import FraudUserNode
-from modules.UserNode import UserNode
-from modules.NetworkNode import NetworkNode
-from modules.IntermediaryNode import IntermediaryNode
+from modules.network.BaseGraph import Graph, nx, plt
+from modules.nodes.FraudUserNode import FraudUserNode
+from modules.nodes.UserNode import UserNode
+from modules.nodes.NetworkNode import NetworkNode
+from modules.nodes.IntermediaryNode import IntermediaryNode
 from Config import InputsConfig as p
 
 def get_new_node(node_id,graph):

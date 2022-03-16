@@ -2,7 +2,7 @@
 import operator
 import logging
 from numpy.random import poisson, exponential
-from modules.BaseNode import Node
+from modules.nodes.BaseNode import Node
 from modules.Types import INTERMEDIARY
 from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
