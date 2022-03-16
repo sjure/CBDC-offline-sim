@@ -1,7 +1,7 @@
 from pickle import FALSE
 import requests
 from lxml import etree
-from modules.BaseGraph import Graph, nx, plt
+from modules.network.BaseGraph import Graph, nx, plt
 
 ONLINE = FALSE
 URL = "http://www.topology-zoo.org/files/Uninett2011.graphml"

@@ -5,7 +5,7 @@ import copy
 import matplotlib.pyplot as plt
 from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
-from modules.BaseNode import Node
+from modules.nodes.nodes.BaseNode import Node
 
 class Graph(nx.Graph):
     """ Graph of the network to be simulated """
