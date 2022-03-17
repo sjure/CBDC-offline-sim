@@ -38,6 +38,7 @@ class Transaction():
         self.from_address = from_address
         self.amount = amount
         self.id = self.create_id()
+        self.nonce = secrets.token_hex(16)
     
     def transaction(self):
         """ Returns the transaction object """
@@ -49,8 +50,9 @@ class Transaction():
     
     def create_id(self):
         """ Returns the sha256 signature of the block """
-        block_string = json.dumps(self.transaction()).encode('utf-8')
-        return hashlib.sha256(block_string).hexdigest()
+        block_string = json.dumps(self.transaction())
+        transaction_string = (block_string + self.nonce).encode('utf-8')
+        return hashlib.sha256(transaction_string).hexdigest()
 
     def __str__(self):
         return json.dumps(self.transaction())
