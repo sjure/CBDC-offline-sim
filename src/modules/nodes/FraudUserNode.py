@@ -46,13 +46,17 @@ class FraudUserNode(UserNode):
                     Statistics.fradulent_tx_sent_volume += amount - balance
             self.money_sent += amount
 
-    def do_transaction(self):
-        self.send_money()
+    def _init_deposit(self):
+        has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
+        if has_connection_to_intermediary:
+            self.trigger_reconnected(intermediary)
+            balance = self.ow.get_balance()
+            self.init_balance = balance
+            self.init_deposit = True
+            self.is_online = False
+
+    def tick(self):
         if (not self.init_deposit):
-            has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
-            if has_connection_to_intermediary:
-                self.trigger_reconnected(intermediary)
-                balance = self.ow.get_balance()
-                self.init_balance = balance
-                self.init_deposit = True
-                self.is_online = False
+            eo.add_event(self._init_deposit)
+        if (random.poisson(1/self.tx_rate)):
+            eo.add_event(self.do_transaction)
