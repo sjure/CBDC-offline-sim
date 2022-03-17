@@ -1,15 +1,29 @@
 import secrets
 import json
 import operator
+import hashlib
 from modules.Blockchain import Transaction
 
 class OfflinePayment():
-    def __init__(self, tx, counter, signature, certificate):
+    def __init__(self, tx, counter, signature):
         self.tx = tx
         self.counter = counter
         self.signature = signature
-        self.certificate = certificate
+        self.id = self.create_id()
+
+    def pm(self):
+        """ Returns the payment object """
+        tx = self.tx.transaction()
+        return {
+            "tx":tx,
+            "counter":self.counter,
+        }
     
+    def create_id(self):
+        """ Returns the sha256 signature of the block """
+        block_string = json.dumps(self.pm()).encode('utf-8')
+        return hashlib.sha256(block_string).hexdigest()
+
     def __str__(self):
         tx = self.tx.transaction()
         payment = {
@@ -45,7 +59,7 @@ class OfflineWallet():
 
     def _sign(self, transaction):
         # sign with private key of wallet
-        return ""
+        return 
     
     def deposit(self, amount, sender, server_signature_of_deposit):
         """Converts online funds into offline funds, increases the offine balance."""
@@ -54,7 +68,7 @@ class OfflineWallet():
         self.balance += amount
         tx = Transaction(self.account_id, sender, amount)
         signature = self._sign([amount,sender,self.account_id, self.counter])
-        return OfflinePayment(tx, self.counter, signature, self.certificate)
+        return OfflinePayment(tx, self.counter, signature)
 
 
     def withdraw(self, reciever, amount):
@@ -62,8 +76,8 @@ class OfflineWallet():
         self.counter += 1
         self.balance -= amount
         tx = Transaction(reciever, self.account_id, amount)
-        signature = self._sign([-amount, self.account_id, reciever, self.counter])
-        return OfflinePayment(tx, self.counter,signature, self.certificate)
+        signature = self._sign([-amount, self.account_id, reciever, self.counter]) 
+        return OfflinePayment(tx, self.counter,signature)
 
     def pay(self, amount, reciever):
         """Creates an offine payment object."""
@@ -71,13 +85,12 @@ class OfflineWallet():
         self.balance -= amount
         tx = Transaction(reciever, self.account_id, amount)
         signature = self._sign([amount, self.account_id, reciever, self.counter])
-        return OfflinePayment(tx, self.counter, signature, self.certificate)
+        return OfflinePayment(tx, self.counter, signature)
 
     def collect(self, payment: OfflinePayment):
         """ Verifies an offline payment and applies it to the offline balance by increasing it with the
         payment amount. """
         if (payment in self.payment_log): raise Exception("Payment already in log")
-        # Check time < 10 minutes from now
         # Check payment certificate is from sender
         # Check check signature with correct input
         self.balance += payment.tx.amount
