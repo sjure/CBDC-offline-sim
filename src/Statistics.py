@@ -34,18 +34,30 @@ class Statistics:
     offline_money_after = 0
     total_money_before = 0
     total_money_after = 0
+    
+    def print_fradulent_users():
+        if (len(Statistics.fraud_users)):
+            print("User".ljust(40) + "Balance".ljust(40))
+            sum = 0
+            for user_account in Statistics.fraud_users.keys():
+                sum += Statistics.fraud_users[user_account]
+                print(str_ljust(user_account, spacing=40) + str_ljust(Statistics.fraud_users[user_account], spacing=40))
+            print(str_ljust("Sum", spacing=40) + str_ljust(sum, spacing=40))
+        print()
 
     def print_offline_online():
         print("Online".ljust(40) + "Offline".ljust(40))
         print("Tx".ljust(20) + "Volume".ljust(20) + "Tx".ljust(20) + "Volume".ljust(20))
         print(str_ljust(Statistics.online_tx) + str_ljust(Statistics.online_tx_volume) + 
             str_ljust(Statistics.offline_tx) + str_ljust(Statistics.offline_tx_volume))
+        print()
 
     def print_fraud():
         print("Fraud Sendt".ljust(40) + "Fraud Detected".ljust(40))
         print("Tx".ljust(20) + "Volume".ljust(20) + "Tx".ljust(20) + "Volume".ljust(20))
         print(str_ljust(Statistics.fradulent_tx_sent) + str_ljust(Statistics.fradulent_tx_sent_volume) + 
             str_ljust(Statistics.fradulent_tx_detected) + str_ljust(Statistics.fradulent_tx_detected_volume))
+        print()
 
 
     def print_money_supply():
@@ -53,6 +65,7 @@ class Statistics:
         print("Online".ljust(20) + str_ljust(Statistics.online_money_init) + str_ljust(Statistics.online_money_after)+ str_ljust(Statistics.online_money_after - Statistics.online_money_init))
         print("Offline".ljust(20) + str_ljust(Statistics.offline_money_init) + str_ljust(Statistics.offline_money_after) + str_ljust(Statistics.offline_money_after - Statistics.offline_money_init))
         print("Sum".ljust(20) + str_ljust(Statistics.total_money_before) + str_ljust(Statistics.total_money_after) + str_ljust(Statistics.total_money_after - Statistics.total_money_before))
+        print()
 
     def get_sum_of_balances(graph):
         sum_of_online = 0
@@ -74,12 +87,11 @@ class Statistics:
             if node.type in [USER, FRAUD_USER]:
                 offline_bal = bc.balance_of(node.get_offline_address())
                 print(str(node_id).ljust(5) +str(node.type).ljust(15) + str(online_balance).ljust(25) + str(offline_bal).ljust(15))
+        print()
 
     def print_state():
         Statistics.print_offline_online()
-        print()
         Statistics.print_fraud()
-        print()
         Statistics.print_money_supply()
 
 
