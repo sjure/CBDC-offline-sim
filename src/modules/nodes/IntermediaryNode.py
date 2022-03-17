@@ -74,7 +74,7 @@ class IntermediaryNode(Node):
         if (len(payments)):
             logger.info(f"Redeem payemnts {payments}")
             # topology sort
-            payments = sort_payments(self.payment_log)
+            payments = sort_payments(payments)
             for payment in payments:
                 # Validate certificates
                 # Validate payment with signature and certificate
