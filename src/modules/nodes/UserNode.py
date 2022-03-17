@@ -37,15 +37,15 @@ class UserNode(Node):
         if offline_balance < self.offline_target:
             diff_from_target = self.offline_target - offline_balance
             if diff_from_target <= online_balance:
-                signature = intermediary.offline_deposit(self,diff_from_target)
-                self.ow.deposit(diff_from_target, self.account_id,signature)
+                success, tx, signature = intermediary.offline_deposit(self,diff_from_target)
+                self.ow.deposit(tx,signature)
             else:
-                signature = intermediary.offline_deposit(self,online_balance)
-                self.ow.deposit(online_balance, self.account_id,signature)
+                success, tx, signature = intermediary.offline_deposit(self,online_balance)
+                self.ow.deposit(tx,signature)
         else:
             diff_from_target = offline_balance - self.offline_target
-            signature = self.ow.withdraw(self.account_id, diff_from_target)
-            intermediary.offline_withdraw(self, diff_from_target, signature)
+            withdraw_payment = self.ow.withdraw(self.account_id, diff_from_target)
+            intermediary.offline_withdraw(self, withdraw_payment)
 
     def update_connectivity(self,is_online,intermediary):
         if (self.is_online == is_online):

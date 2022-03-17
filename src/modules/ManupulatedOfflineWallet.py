@@ -15,4 +15,4 @@ class ManipulatedOfflineWallet(OfflineWallet):
         # self.balance -= amount
         tx = Transaction(reciever, self.account_id, amount)
         signature = self._sign([amount, self.account_id, reciever, self.counter])
-        return OfflinePayment(tx, self.counter, signature, self.certificate)
+        return OfflinePayment(tx, self.counter, signature)
