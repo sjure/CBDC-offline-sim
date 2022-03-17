@@ -4,7 +4,7 @@ Offline simulation framework for CBDC in a Norwegian context with architecture a
 
 Features:
 * Simulation of graph [x]
-* Graph simulates Norway []
+* Graph simulates Norway [x]
 * Blockchain for transactions [x]
 * Logging [x]
     * Online vs offline tx, amount + volume [x]
