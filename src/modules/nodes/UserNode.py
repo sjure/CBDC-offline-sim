@@ -23,7 +23,7 @@ class UserNode(Node):
 
     def redeem_offline_transactions(self,intermediary):
         payments = self.ow.redeem_payments()
-        intermediary.redeem_payments(payments)
+        intermediary.redeem_payments(payments, self)
 
     def trigger_reconnected(self, intermediary):
         offline_balance = self.get_offline_balance()
