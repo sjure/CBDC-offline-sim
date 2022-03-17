@@ -24,6 +24,9 @@ class FraudUserNode(UserNode):
 
     def approve_recieve_offline_transaction(self,payer_node, amount):
         return True
+    
+    def update_connectivity(self,is_online,intermediary):
+        pass
 
     def send_money(self):
         """ request money"""
@@ -46,10 +49,10 @@ class FraudUserNode(UserNode):
     def do_transaction(self):
         self.send_money()
         if (not self.init_deposit):
-            self.check_online()
-            if (self.is_online):
-                self.trigger_reconnected(self.closest_intermediary)
-            balance = self.ow.get_balance()
-            self.init_balance = balance
-            self.init_deposit = True
-            self.is_online = False
+            has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
+            if has_connection_to_intermediary:
+                self.trigger_reconnected(intermediary)
+                balance = self.ow.get_balance()
+                self.init_balance = balance
+                self.init_deposit = True
+                self.is_online = False
