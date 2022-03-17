@@ -37,6 +37,7 @@ class Simulate:
         Simulate.cleanup()
         logger.info(bc.blocks)
         Statistics.print_all_balances(Simulate.graph)
+        Statistics.print_fradulent_users()
         Statistics.print_state()
         logger.info("============= Run End ===============")
 
