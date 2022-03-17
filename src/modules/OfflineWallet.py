@@ -74,7 +74,7 @@ class OfflineWallet():
         """Converts offline funds into online funds, decreases the offline balance."""
         self.counter += 1
         self.balance -= amount
-        tx = Transaction(reciever, self.account_id, amount)
+        tx = Transaction(self.account_id, reciever, amount)
         signature = self._sign([-amount, self.account_id, reciever, self.counter]) 
         op = OfflinePayment(tx, self.counter,signature)
         self.payment_log.append(op)
