@@ -33,11 +33,10 @@ class Block():
 
 class Transaction():
     """ Transaction """
-    def __init__(self, to_address, from_address, amount, ts):
+    def __init__(self, to_address, from_address, amount):
         self.to_address = to_address
         self.from_address = from_address
         self.amount = amount
-        self.ts = ts
         self.id = self.create_id()
     
     def transaction(self):
@@ -46,7 +45,6 @@ class Transaction():
             "to_address": self.to_address,
             "from_address":self.from_address,
             "amount":self.amount,
-            "ts":self.ts
         }
     
     def create_id(self):
@@ -129,19 +127,17 @@ class BlockChain:
         return True
 
     def add_transaction(to_address, from_address, value):
-        ts = int(time.time()*1e6)
         is_valid = BlockChain.is_valid_transaction(from_address, value)
         if not is_valid:
             logger.error(f"ERROR: Invalid transaction to_address={to_address} from_address={from_address} value={value}")
             return False
-        tx = Transaction(to_address, from_address,value,ts)
+        tx = Transaction(to_address, from_address,value)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
         return tx
     
     def deposit_money(address,value):
-        ts = int(time.time()*1e6)
-        tx = Transaction(address, "", value,ts)
+        tx = Transaction(address, "", value)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
     

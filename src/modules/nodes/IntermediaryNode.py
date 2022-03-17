@@ -71,7 +71,7 @@ class IntermediaryNode(Node):
 
     
     def redeem_payments(self, payments):
-        payments.sort(key=operator.attrgetter("timestamp"), reverse=False)
+        # topology sort
         if (len(payments)):
             logger.info(f"Redeem payemnts {payments}")
         for payment in payments:
