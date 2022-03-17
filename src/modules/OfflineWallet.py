@@ -87,14 +87,25 @@ class OfflineWallet():
         signature = self._sign([amount, self.account_id, reciever, self.counter])
         return OfflinePayment(tx, self.counter, signature)
 
+    def has_payment(self, payment: OfflinePayment):
+        if (payment in self.payment_log):
+            return True
+        for p in self.payment_log:
+            if p.tx.id == payment.tx.id:
+                return True
+        return False
+
     def collect(self, payment: OfflinePayment):
         """ Verifies an offline payment and applies it to the offline balance by increasing it with the
         payment amount. """
-        if (payment in self.payment_log): raise Exception("Payment already in log")
+        payment_already_collected = self.has_payment(payment)
+        if (payment_already_collected):
+            return False
         # Check payment certificate is from sender
         # Check check signature with correct input
         self.balance += payment.tx.amount
         self.payment_log.append(payment)
+        return True
 
     def get_balance(self):
         """ Returns the current offline balance stored inside the TEE storage."""
