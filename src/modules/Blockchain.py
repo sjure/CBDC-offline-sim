@@ -146,14 +146,13 @@ class BlockChain:
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
     
-    def has_transaction(id):
+    def has_transaction(tx):
+        id = tx.id
         for block in BlockChain.blocks:
-            for transaction in block.transactions:
-                if (transaction.id == id):
-                    return True
-        for transaction in BlockChain.queue:
-            if (transaction.id == id):
-                    return True
+            if tx in block.transactions:
+                return True
+        if tx in BlockChain.queue:
+            return True
         return False
 
     def get_n_of_transactions():
