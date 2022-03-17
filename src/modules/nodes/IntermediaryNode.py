@@ -58,9 +58,10 @@ class IntermediaryNode(Node):
         successfull_add = bc.add_transaction_from_offline(withdraw_payment.tx)
         if not successfull_add:
             logger.info(f"Withdrawal failed, Fradulent balance")
-            self.fraud_payment_detected(withdraw_payment.tx)
+            self.fraud_payment_detected(withdraw_payment)
 
-    def fraud_payment_detected(self,tx):
+    def fraud_payment_detected(self,payment):
+        tx = payment.tx
         if (tx not in self.fradulent_transactions):
             logger.error(f"ERROR: Fradulent payment logged amount={tx.amount} {tx.from_address}")
             self.fradulent_transactions.append(tx)
@@ -71,19 +72,20 @@ class IntermediaryNode(Node):
             Statistics.fradulent_tx_detected += 1
             Statistics.fradulent_tx_detected_volume += tx.amount
 
+
     
-    def redeem_payments(self, payments):
+    def redeem_payments(self, payments, node):
         if (len(payments)):
-            logger.info(f"Redeem payemnts {payments}")
+            logger.info(f"Redeem payemnts {node.get_offline_address()} {payments}")
             # topology sort
             payments = sort_payments(payments)
             for payment in payments:
                 # Validate certificates
                 # Validate payment with signature and certificate
-                if not bc.has_transaction(payment.tx.id):
+                if not bc.has_transaction(payment.tx) and payment.tx not in self.fradulent_transactions:
                     successfull_add = bc.add_transaction_from_offline(payment.tx)
                     if not successfull_add:
-                        self.fraud_payment_detected(payment.tx)
+                        self.fraud_payment_detected(payment)
 
     def get_funds_of_node(self, account_id):
         return bc.balance_of(account_id)
