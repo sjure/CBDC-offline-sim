@@ -37,7 +37,7 @@ class Statistics:
     
     def print_fradulent_users():
         if (len(Statistics.fraud_users)):
-            print("User".ljust(40) + "Balance".ljust(40))
+            print("Detected fraudulent user".ljust(40) + "Balance".ljust(40))
             sum = 0
             for user_account in Statistics.fraud_users.keys():
                 sum += Statistics.fraud_users[user_account]
