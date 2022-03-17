@@ -7,7 +7,7 @@ def topologicalSort(payment_number,visited_payments,stack, payment_address_map, 
         if not visited_payments[i]:
             topologicalSort(i, visited_payments,stack, payment_address_map, payments)
     
-    stack.append(payments[i])
+    stack.append(payments[payment_number])
 
 
 
