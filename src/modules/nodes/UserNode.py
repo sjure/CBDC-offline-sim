@@ -72,8 +72,11 @@ class UserNode(Node):
                 Statistics.offline_tx += 1
                 Statistics.offline_tx_volume += payment.tx.amount
                 logger.info(f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
-                target.ow.collect(payment)
-                target.ow.sync_payment_log(payment_log)
+                pm_success = target.ow.collect(payment)
+                if pm_success:
+                    target.ow.sync_payment_log(payment_log)
+                else:
+                    logger.info(f"ERROR: Payment already in collection, rejected payment {payment}")
                 return True
             else:
                 logger.info(f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
