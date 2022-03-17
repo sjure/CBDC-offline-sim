@@ -37,8 +37,8 @@ class Transaction():
         self.to_address = to_address
         self.from_address = from_address
         self.amount = amount
-        self.id = self.create_id()
         self.nonce = secrets.token_hex(16)
+        self.id = self.create_id()
     
     def transaction(self):
         """ Returns the transaction object """
