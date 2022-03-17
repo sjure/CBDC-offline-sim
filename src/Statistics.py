@@ -19,6 +19,8 @@ class Statistics:
     fradulent_tx_sent = 0
     fradulent_tx_sent_volume = 0
 
+    fraud_users = {}
+
     # HW failures
     network_failures = 0
     network_repairs = 0
