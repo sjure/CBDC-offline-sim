@@ -71,18 +71,17 @@ class IntermediaryNode(Node):
 
     
     def redeem_payments(self, payments):
-        # topology sort
-        self.payment_log = sort_payments(self.payment_log)
-        
         if (len(payments)):
             logger.info(f"Redeem payemnts {payments}")
-        for payment in payments:
-            # Validate certificates
-            # Validate payment with signature and certificate
-            if not bc.has_transaction(payment.tx.id):
-                successfull_add = bc.add_transaction_from_offline(payment.tx)
-                if not successfull_add:
-                    self.fraud_payment_detected(payment.tx)
+            # topology sort
+            payments = sort_payments(self.payment_log)
+            for payment in payments:
+                # Validate certificates
+                # Validate payment with signature and certificate
+                if not bc.has_transaction(payment.tx.id):
+                    successfull_add = bc.add_transaction_from_offline(payment.tx)
+                    if not successfull_add:
+                        self.fraud_payment_detected(payment.tx)
 
     def get_funds_of_node(self, account_id):
         return bc.balance_of(account_id)
