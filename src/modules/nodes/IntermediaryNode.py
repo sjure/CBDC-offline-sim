@@ -54,9 +54,11 @@ class IntermediaryNode(Node):
         return self.add_transaction_to_bc(node.account_id,node.get_offline_address(),amount)
 
     def offline_withdraw(self, node, withdraw_payment):
-        logger.info(f"Withdrawal from offline wallet from {withdraw_payment.tx.from_address} to {node.get_offline_address()} amount {withdraw_payment.tx.amount}")
+        logger.info(f"Withdrawal from offline wallet from {withdraw_payment.tx.from_address} to {withdraw_payment.tx.to_address} amount {withdraw_payment.tx.amount}")
         # Verify signature of Secure hardware deletion of funds
-        return bc.add_transaction_from_offline(withdraw_payment.tx)
+        successfull_add = bc.add_transaction_from_offline(withdraw_payment.tx)
+        if not successfull_add:
+            self.fraud_payment_detected(withdraw_payment.tx)
 
     def fraud_payment_detected(self,tx):
         if (tx not in self.fradulent_transactions):
