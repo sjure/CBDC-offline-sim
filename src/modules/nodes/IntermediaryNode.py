@@ -18,7 +18,6 @@ class IntermediaryNode(Node):
     current_offline_ticks = 0
     type = INTERMEDIARY
     fradulent_transactions = []
-    fraud_users = {}
 
     def __init__(self, sim=None, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
@@ -58,16 +57,17 @@ class IntermediaryNode(Node):
         # Verify signature of Secure hardware deletion of funds
         successfull_add = bc.add_transaction_from_offline(withdraw_payment.tx)
         if not successfull_add:
+            logger.info(f"Withdrawal failed, Fradulent balance")
             self.fraud_payment_detected(withdraw_payment.tx)
 
     def fraud_payment_detected(self,tx):
         if (tx not in self.fradulent_transactions):
             logger.error(f"ERROR: Fradulent payment logged amount={tx.amount} {tx.from_address}")
             self.fradulent_transactions.append(tx)
-            if (tx.from_address not in self.fraud_users.keys()):
-                self.fraud_users[tx.from_address] = tx.amount
+            if (tx.from_address not in Statistics.fraud_users.keys()):
+                Statistics.fraud_users[tx.from_address] = tx.amount
             else:
-                self.fraud_users[tx.from_address] += tx.amount
+                Statistics.fraud_users[tx.from_address] += tx.amount
             Statistics.fradulent_tx_detected += 1
             Statistics.fradulent_tx_detected_volume += tx.amount
 
