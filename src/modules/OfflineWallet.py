@@ -3,7 +3,6 @@ import json
 import operator
 import hashlib
 from modules.Blockchain import Transaction
-
 class OfflinePayment():
     def __init__(self, tx, counter, signature):
         self.tx = tx
@@ -109,9 +108,9 @@ class OfflineWallet():
 
     def sync_payment_log(self, payment_log):
         for payment in payment_log:
+            # Check payment with payment certificate
             if payment not in self.payment_log:
                 self.payment_log.append(payment)
-        # Topology sort
 
     def get_payment_log(self):
         return self.payment_log

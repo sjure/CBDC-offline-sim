@@ -8,6 +8,7 @@ from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
 from Statistics import Statistics
 from EventOrganizer import EventOrganizer as eo
+from modules.sort.SortPayments import sort_payments
 logger = logging.getLogger("CBDCSimLog")
 
 class IntermediaryNode(Node):
@@ -71,6 +72,8 @@ class IntermediaryNode(Node):
     
     def redeem_payments(self, payments):
         # topology sort
+        self.payment_log = sort_payments(self.payment_log)
+        
         if (len(payments)):
             logger.info(f"Redeem payemnts {payments}")
         for payment in payments:
