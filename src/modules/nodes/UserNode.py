@@ -12,6 +12,7 @@ logger = logging.getLogger("CBDCSimLog")
 class UserNode(Node):
     """ User node """
     transactions = dict()
+    ban_list = set()
     is_online = False
     init_deposit = False
     type = USER
@@ -23,7 +24,9 @@ class UserNode(Node):
 
     def redeem_offline_transactions(self,intermediary):
         payments = self.ow.redeem_payments()
-        intermediary.redeem_payments(payments, self)
+        ban_list = intermediary.redeem_payments(payments, self)
+        if p.lockout_after_consolidation:
+            self.ban_list = ban_list
 
     def trigger_reconnected(self, intermediary):
         offline_balance = self.get_offline_balance()
@@ -56,11 +59,18 @@ class UserNode(Node):
         self.is_online = is_online
         self.closest_intermediary = intermediary
 
+    def check_payer_node(self,payer_node):
+        if p.lockout_after_consolidation:
+            if payer_node.get_offline_address() in self.ban_list:
+                logger.error(f"ERROR: payer address in ban list {payer_node.get_offline_address()}")
+                return False
+        return True
+
     def approve_recieve_offline_transaction(self,payer_node, amount):
         if (self.is_online):
             return self.closest_intermediary.is_valid_tx(payer_node.get_offline_address(), amount)
         else:
-            return True
+            return self.check_payer_node(payer_node)
 
     def send_offline_transaction(self, amount, target):
         if amount <= 0:
@@ -97,13 +107,13 @@ class UserNode(Node):
             # Do online transaction, both users can check the validity in the intermediary
             self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
         elif (self.is_online and not target.is_online):
+            # If the payee is offline, the payer will confirm the transaction with the intermediary 
+            # and send the signatrue as a receipt
             is_valid, tx, sign = self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
             if (is_valid):
                 target.recieve_confirmation(tx,sign)
-        elif (not self.is_online and target.is_online):
-            logger.info("Offline tx with online check")
-            self.send_offline_transaction(amount, target)
         else:
+            # The case if both are offline, and if self is offline and receiver is online
             logger.info("Offline tx")
             self.send_offline_transaction(amount, target)
 

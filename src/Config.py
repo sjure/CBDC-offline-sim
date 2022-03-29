@@ -31,8 +31,8 @@ class InputsConfig:
     intermediary_failure_rate = 20
     intermediary_recovery_rate = 5
     
+    intemediary_refund_payee_fradulent_transactions = True
     client_preventions = False
-    lockout_after_consolidation = False
-    intemediary_refund_payee_fradulent_transactions = False
+    lockout_after_consolidation = True
     per_tx_volume_limit = float("inf")
     collaberative_security = False

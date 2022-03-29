@@ -18,6 +18,7 @@ class IntermediaryNode(Node):
     current_offline_ticks = 0
     type = INTERMEDIARY
     fradulent_transactions = []
+    server_ban_list = set()
 
     def __init__(self, sim=None, node_id=-1,**attr):
         super().__init__(node_id=node_id, **attr)
@@ -69,6 +70,7 @@ class IntermediaryNode(Node):
                 Statistics.fraud_users[tx.from_address] = tx.amount
             else:
                 Statistics.fraud_users[tx.from_address] += tx.amount
+            self.server_ban_list.add(tx.from_address)
             Statistics.fradulent_tx_detected += 1
             Statistics.fradulent_tx_detected_volume += tx.amount
 
@@ -91,6 +93,8 @@ class IntermediaryNode(Node):
                     successfull_add = bc.add_transaction_from_offline(payment.tx)
                     if not successfull_add:
                         self.fraud_payment_detected(payment)
+        if p.lockout_after_consolidation:
+            return self.server_ban_list
 
     def get_funds_of_node(self, account_id):
         return bc.balance_of(account_id)
