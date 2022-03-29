@@ -42,11 +42,12 @@ class OfflinePayment():
 
 
 class OfflineWallet():
-    payment_log = []
+
     def __init__(self):
         """Initializes protected environment, generates a key-pair along with attestation"""
         self.balance = 0
         self.counter = 0
+        self.payment_log = []
         self.account_id = secrets.token_hex(16)
         self.certificate = None
         self.__cert_init()
