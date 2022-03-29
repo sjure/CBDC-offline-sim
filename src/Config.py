@@ -2,9 +2,9 @@ class InputsConfig:
     """ Input config for the module """
     tx_limit = 10000
     tx_per_node = 20
-    graph_type = "no"
+    graph_type = "ba"
     graph_params = {
-        "n":10,
+        "n":100,
         "m":3,
     }
     fraud_node_percentage = 0.1
@@ -30,3 +30,9 @@ class InputsConfig:
     network_recovery_rate = 5
     intermediary_failure_rate = 20
     intermediary_recovery_rate = 5
+    
+    client_preventions = False
+    lockout_after_consolidation = False
+    approve_fradulent_transactions_by_intermediary = False
+    per_tx_volume_limit = float("inf")
+    collaberative_security = False

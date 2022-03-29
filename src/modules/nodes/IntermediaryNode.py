@@ -72,6 +72,11 @@ class IntermediaryNode(Node):
             Statistics.fradulent_tx_detected += 1
             Statistics.fradulent_tx_detected_volume += tx.amount
 
+            if p.approve_fradulent_transactions_by_intermediary:
+                # The payee does not loose money, and the bank is responsible
+                # For getting the money back from the payer
+                self.bc.deposit_money(tx.to_address,tx.amount)
+
 
     
     def redeem_payments(self, payments, node):
