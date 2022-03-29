@@ -75,7 +75,7 @@ class IntermediaryNode(Node):
             if p.intemediary_refund_payee_fradulent_transactions:
                 # The payee does not loose money, and the bank is responsible
                 # For getting the money back from the payer
-                self.bc.deposit_money(tx.to_address,tx.amount)
+                bc.deposit_money(tx.to_address,tx.amount)
 
 
     
