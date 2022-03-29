@@ -1,5 +1,6 @@
 class InputsConfig:
     """ Input config for the module """
+    random_seed = 42
     tx_limit = 10000
     tx_per_node = 20
     graph_type = "ba"

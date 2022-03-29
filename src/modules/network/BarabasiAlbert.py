@@ -1,4 +1,4 @@
-from numpy.random import random
+from numpy import random
 from modules.network.BaseGraph import Graph, nx, plt
 from modules.nodes.FraudUserNode import FraudUserNode
 from modules.nodes.UserNode import UserNode
@@ -7,7 +7,7 @@ from modules.nodes.IntermediaryNode import IntermediaryNode
 from Config import InputsConfig as p
 
 def get_new_node(node_id,graph):
-    if random() > p.fraud_node_percentage:
+    if random.random() > p.fraud_node_percentage:
         return UserNode(node_id=node_id, graph=graph)
     else:
         return FraudUserNode(node_id=node_id, graph=graph)

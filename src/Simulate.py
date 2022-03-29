@@ -1,5 +1,5 @@
 import logging
-import json
+import secrets
 from numpy import random
 from modules.Types import NETWORK, INTERMEDIARY, USER
 from Config import InputsConfig as p
@@ -13,6 +13,8 @@ from modules.network.NorGraph import NorGraph
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
 logging.basicConfig(filename="log.log",format=LOGGING_FORMAT, level=logging.INFO,datefmt="%H:%M:%S", filemode='w',)
 
+random.seed(p.random_seed)
+
 logger = logging.getLogger("CBDCSimLog")
 
 graphs = {
@@ -23,20 +25,20 @@ graphs = {
 class Simulate:
     """ Simulation class """
 
-    graph = graphs[p.graph_type](**p.graph_params)
+    graph = graphs[p.graph_type](**p.graph_params, random=p.random_seed)
 
     def run():
         logger.info("============= New run ===============")
         Simulate.add_init_balance(p.balance["mean"], p.balance["std"])
         logger.info("============= Init balances added  ===============")
-        Statistics.print_all_balances(Simulate.graph)
+        #Statistics.print_all_balances(Simulate.graph)
         eo.generate_events(Simulate.graph)
         logger.info("============= Events Generated ===============")
         logger.info(f"Amount of events = {eo.event_queue.qsize()}")
         eo.event_organizer()
         Simulate.cleanup()
         logger.info(bc.blocks)
-        Statistics.print_all_balances(Simulate.graph)
+        #Statistics.print_all_balances(Simulate.graph)
         Statistics.print_fradulent_users()
         Statistics.print_state()
         logger.info("============= Run End ===============")

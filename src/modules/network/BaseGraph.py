@@ -9,9 +9,9 @@ from modules.nodes.BaseNode import Node
 
 class Graph(nx.Graph):
     """ Graph of the network to be simulated """
-    def __init__(self,sim=None, **attr):
+    def __init__(self,sim=None, seed=0, **attr):
         super().__init__(**attr)
-        self.seed = rd.randint(0, 1000)
+        self.seed = seed
         self.sim = sim
         self.attackdict = {
             "degree": nx.degree_centrality,
