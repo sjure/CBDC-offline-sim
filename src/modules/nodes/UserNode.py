@@ -67,7 +67,7 @@ class UserNode(Node):
         return True
 
     def approve_recieve_offline_transaction(self,payer_node, amount):
-        if (amount > p.per_tx_volume_limit):
+        if (amount > p.per_tx_amount_limit):
             return False
         if (self.is_online):
             return self.closest_intermediary.is_valid_tx(payer_node.get_offline_address(), amount)
@@ -100,7 +100,7 @@ class UserNode(Node):
         """ request money"""
         neigbor_choice = int(random.randint(0, len(self.neighbors)))
         target = self.neighbors[neigbor_choice]
-        amount = min(max(int(random.normal(p.tx_volume["mean"], p.tx_volume["std"])),1),  p.per_tx_volume_limit)
+        amount = min(max(int(random.normal(p.tx_volume["mean"], p.tx_volume["std"])),1),  p.per_tx_amount_limit)
         if (self.balance < amount):
             return
         self.check_online()
