@@ -12,8 +12,8 @@ class InputsConfig:
     tx_rate = 5
     tx_rate_fraud = 5
     tx_volume={ 
-        "mean": 10,
-        "std": 10
+        "mean": 100,
+        "std": 40
     }
     balance = {
         "mean": 5000,
@@ -24,16 +24,16 @@ class InputsConfig:
         "std": 500
     }
     fraud_user_balance_preferance = {
-        "mean": 10e12,
+        "mean": 1_000_000,
         "std": 0
     }
     network_failure_rate = 20
     network_recovery_rate = 5
-    intermediary_failure_rate = 20
+    intermediary_failure_rate = 30
     intermediary_recovery_rate = 5
     
     intemediary_refund_payee_fradulent_transactions = True
-    per_tx_amount_limit = 500
+    per_tx_amount_limit = 1000
     client_preventions = False
-    lockout_after_consolidation = False
+    lockout_after_consolidation = True
     collaberative_security = False
