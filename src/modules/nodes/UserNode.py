@@ -60,6 +60,8 @@ class UserNode(Node):
         self.closest_intermediary = intermediary
 
     def check_payer_node(self,payer_node):
+        if p.client_preventions:
+            pass
         if p.lockout_after_consolidation:
             if payer_node.get_offline_address() in self.ban_list:
                 logger.error(f"ERROR: payer address in ban list {payer_node.get_offline_address()}")
