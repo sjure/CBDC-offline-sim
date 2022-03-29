@@ -2,7 +2,7 @@ import math
 import logging
 from numpy import random
 from Statistics import Statistics
-from modules.walletHandler.ManupulatedOfflineWallet import ManipulatedOfflineWallet
+from modules.wallets.ManupulatedOfflineWallet import ManipulatedOfflineWallet
 from modules.nodes.UserNode import UserNode
 from modules.Types import FRAUD_USER
 from modules.Bfs import bfs_to_intermediary
