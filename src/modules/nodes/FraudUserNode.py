@@ -2,6 +2,7 @@ import math
 import logging
 from numpy import random
 from Statistics import Statistics
+from modules.events.UserEvent import UserEvent
 from modules.wallets.ManupulatedOfflineWallet import ManipulatedOfflineWallet
 from modules.nodes.UserNode import UserNode
 from modules.Types import FRAUD_USER
@@ -57,6 +58,6 @@ class FraudUserNode(UserNode):
 
     def tick(self):
         if (not self.init_deposit):
-            eo.add_event(self._init_deposit)
+            eo.add_event(UserEvent(self._init_deposit))
         if (random.poisson(1/self.tx_rate)):
-            eo.add_event(self.do_transaction)
+            eo.add_event(UserEvent(self.do_transaction))

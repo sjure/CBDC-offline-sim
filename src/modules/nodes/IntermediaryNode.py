@@ -2,6 +2,7 @@
 import operator
 import logging
 from numpy.random import poisson, exponential
+from modules.events.NetworkEvent import NetworkEvent
 from modules.nodes.BaseNode import Node
 from modules.Types import INTERMEDIARY
 from modules.Blockchain import BlockChain as bc
@@ -120,4 +121,4 @@ class IntermediaryNode(Node):
 
     def tick(self):
         """ Tick method of intermediary node """
-        eo.add_event(self.handle_fault)
+        eo.add_event(NetworkEvent(self.handle_fault))

@@ -2,6 +2,7 @@ import math
 import logging
 from numpy import random
 from Statistics import Statistics
+from modules.events.UserEvent import UserEvent
 from modules.nodes.BaseNode import Node
 from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
@@ -166,7 +167,7 @@ class UserNode(Node):
 
     def tick(self):
         if (not self.init_deposit):
-            eo.add_event(self.check_online)
+            eo.add_event(UserEvent(self.check_online))
             self.init_deposit = True
         if (random.poisson(1/self.tx_rate)):
-            eo.add_event(self.do_transaction)
+            eo.add_event(UserEvent(self.do_transaction))

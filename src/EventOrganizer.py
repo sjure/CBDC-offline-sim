@@ -2,18 +2,18 @@ import math
 from queue import Queue
 from modules.Blockchain import BlockChain as bc
 from Config import InputsConfig as p
-
+from modules.events.BaseEvent import Event
 
 class EventOrganizer:
     running = True
     event_queue = Queue()
     tick = 0
     
-    def add_event(event):
+    def add_event(event: Event):
         EventOrganizer.event_queue.put(event)
 
-    def event_handler(event):
-        event()
+    def event_handler(event: Event):
+        event.execute()
 
     def event_organizer():
         while EventOrganizer.running:

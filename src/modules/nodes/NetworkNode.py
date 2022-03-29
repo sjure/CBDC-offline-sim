@@ -1,5 +1,6 @@
 import logging
 from numpy.random import poisson, exponential
+from modules.events.NetworkEvent import NetworkEvent
 from modules.nodes.BaseNode import Node
 from modules.Types import NETWORK
 from Config import InputsConfig as p
@@ -36,4 +37,4 @@ class NetworkNode(Node):
 
     def tick(self) -> None:
         """ The tick method of a router """
-        eo.add_event(self.handle_faults)
+        eo.add_event(NetworkEvent(self.handle_faults))
