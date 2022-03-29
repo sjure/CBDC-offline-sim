@@ -14,7 +14,6 @@ logger = logging.getLogger("CBDCSimLog")
 class UserNode(Node):
     """ User node """
     transactions = dict()
-    ban_list = set()
     is_online = False
     init_deposit = False
     type = USER
@@ -23,6 +22,8 @@ class UserNode(Node):
         self.node_id = node_id
         self.offline_target = max(int(random.normal(p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"])), 0)
         self.tx_rate = p.tx_rate
+        self.payment_log = []
+        self.ban_list = set()
 
     def redeem_offline_transactions(self,intermediary):
         payments = self.payment_log

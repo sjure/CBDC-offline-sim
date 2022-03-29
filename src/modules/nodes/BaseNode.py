@@ -13,7 +13,6 @@ class Node(ABC):
         self.ow = OfflineWallet()
         self.neighbors = []
         self.network_neighbors = []
-        self.payment_log = []
 
     def init_neighbors(self):
         """
