@@ -47,7 +47,6 @@ class OfflineWallet():
         """Initializes protected environment, generates a key-pair along with attestation"""
         self.balance = 0
         self.counter = 0
-        self.payment_log = []
         self.account_id = secrets.token_hex(16)
         self.certificate = None
         self.__cert_init()
@@ -67,7 +66,6 @@ class OfflineWallet():
         self.counter += 1
         self.balance += tx.amount
         op = OfflinePayment(tx, self.counter, server_signature_of_deposit)
-        self.payment_log.append(op)
         return op
 
     def withdraw(self, reciever, amount):
@@ -77,7 +75,6 @@ class OfflineWallet():
         tx = Transaction(reciever, self.account_id, amount)
         signature = self._sign([-amount, self.account_id, reciever, self.counter]) 
         op = OfflinePayment(tx, self.counter,signature)
-        self.payment_log.append(op)
         return op
 
     def pay(self, amount, reciever):
@@ -88,44 +85,19 @@ class OfflineWallet():
         signature = self._sign([amount, self.account_id, reciever, self.counter])
         return OfflinePayment(tx, self.counter, signature)
 
-    def has_payment(self, payment: OfflinePayment):
-        if (payment in self.payment_log):
-            return True
-        for p in self.payment_log:
-            if p.tx.id == payment.tx.id:
-                return True
-        return False
 
     def collect(self, payment: OfflinePayment):
         """ Verifies an offline payment and applies it to the offline balance by increasing it with the
         payment amount. """
-        payment_already_collected = self.has_payment(payment)
-        if (payment_already_collected):
-            return False
         # Check payment certificate is from sender
         # Check check signature with correct input
         self.balance += payment.tx.amount
-        self.payment_log.append(payment)
         return True
 
     def get_balance(self):
         """ Returns the current offline balance stored inside the TEE storage."""
         return self.balance
     
-    def redeem_payments(self):
-        """ Returns payments to redeem to intermediary """
-        payments_to_redeem = self.payment_log
-        self.payment_log = []
-        return payments_to_redeem
-
-    def sync_payment_log(self, payment_log):
-        for payment in payment_log:
-            # Check payment with payment certificate
-            if payment not in self.payment_log:
-                self.payment_log.append(payment)
-
-    def get_payment_log(self):
-        return self.payment_log
 
 
 if __name__ == "__main__":
@@ -133,4 +105,3 @@ if __name__ == "__main__":
     ow.deposit(100,"online-wallet","")
     ow.pay(50,"A")
     print(ow.get_balance())
-    print(ow.payment_log)

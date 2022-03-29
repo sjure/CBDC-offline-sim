@@ -4,14 +4,16 @@ from modules.Types import NETWORK, INTERMEDIARY,USER, FRAUD_USER
 from modules.wallets.OfflineWallet import OfflineWallet
 class Node(ABC):
     """ Node object to use in the graph """
-    neighbors = []
-    network_neighbors = []
     type = None
+
     def __init__(self, graph=None, node_id=-1):
         self.graph = graph
         self.node_id = node_id
         self.account_id = secrets.token_hex(16)
         self.ow = OfflineWallet()
+        self.neighbors = []
+        self.network_neighbors = []
+        self.payment_log = []
 
     def init_neighbors(self):
         """

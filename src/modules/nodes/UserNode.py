@@ -8,6 +8,7 @@ from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p
 from EventOrganizer import EventOrganizer as eo
+from modules.wallets.OfflineWallet import OfflinePayment
 logger = logging.getLogger("CBDCSimLog")
 
 class UserNode(Node):
@@ -24,7 +25,7 @@ class UserNode(Node):
         self.tx_rate = p.tx_rate
 
     def redeem_offline_transactions(self,intermediary):
-        payments = self.ow.redeem_payments()
+        payments = self.payment_log
         ban_list = intermediary.redeem_payments(payments, self)
         if p.lockout_after_consolidation:
             self.ban_list = ban_list
@@ -42,13 +43,16 @@ class UserNode(Node):
             diff_from_target = self.offline_target - offline_balance
             if diff_from_target <= online_balance:
                 success, tx, signature = intermediary.offline_deposit(self,diff_from_target)
-                self.ow.deposit(tx,signature)
+                offline_payment = self.ow.deposit(tx,signature)
+                self.payment_log.append(offline_payment)
             else:
                 success, tx, signature = intermediary.offline_deposit(self,online_balance)
-                self.ow.deposit(tx,signature)
+                offline_payment = self.ow.deposit(tx,signature)
+                self.payment_log.append(offline_payment)
         else:
             diff_from_target = offline_balance - self.offline_target
             withdraw_payment = self.ow.withdraw(self.account_id, diff_from_target)
+            self.payment_log.append(withdraw_payment)
             intermediary.offline_withdraw(self, withdraw_payment)
 
     def update_connectivity(self,is_online,intermediary):
@@ -87,9 +91,9 @@ class UserNode(Node):
                 Statistics.offline_tx += 1
                 Statistics.offline_tx_volume += payment.tx.amount
                 logger.info(f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
-                pm_success = target.ow.collect(payment)
+                pm_success = target.collect(payment)
                 if pm_success:
-                    target.ow.sync_payment_log(payment_log)
+                    target.sync_payment_log(payment_log)
                 else:
                     logger.info(f"ERROR: Payment already in collection, rejected payment {payment}")
                 return True
@@ -130,7 +134,7 @@ class UserNode(Node):
         if (self.offline_sufficient_funds(amount)):
             address = reciever.get_offline_address()
             payment = self.ow.pay(amount, address)
-            payment_log = self.ow.get_payment_log()
+            payment_log = self.get_payment_log()
             return True, payment, payment_log
         return False, None, []
 
@@ -164,6 +168,30 @@ class UserNode(Node):
         if (has_connection_to_intermediary):
             return True, intermediary.get_funds_of_node(self.account_id)
         return False, 0
+    
+    def collect(self, payment: OfflinePayment):
+        payment_already_collected = self.has_payment(payment)
+        if (payment_already_collected):
+            return False
+        self.ow.collect(payment)
+        self.payment_log.append(payment)
+
+    def sync_payment_log(self, payment_log):
+        for payment in payment_log:
+            # Check payment with payment certificate
+            if payment not in self.payment_log:
+                self.payment_log.append(payment)
+
+    def get_payment_log(self):
+        return self.payment_log
+
+    def has_payment(self, payment: OfflinePayment):
+        if (payment in self.payment_log):
+            return True
+        for p in self.payment_log:
+            if p.tx.id == payment.tx.id:
+                return True
+        return False
 
     def tick(self):
         if (not self.init_deposit):
