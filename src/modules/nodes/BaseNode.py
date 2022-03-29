@@ -1,7 +1,7 @@
 import secrets
 from abc import ABC, abstractmethod
 from modules.Types import NETWORK, INTERMEDIARY,USER, FRAUD_USER
-from modules.OfflineWallet import OfflineWallet
+from modules.walletHandler.OfflineWallet import OfflineWallet
 class Node(ABC):
     """ Node object to use in the graph """
     neighbors = []

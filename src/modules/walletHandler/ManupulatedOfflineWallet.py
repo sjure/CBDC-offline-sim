@@ -2,7 +2,7 @@ import secrets
 import json
 import operator
 from modules.Blockchain import Transaction
-from modules.OfflineWallet import OfflinePayment, OfflineWallet
+from modules.walletHandler.OfflineWallet import OfflinePayment, OfflineWallet
 
 class ManipulatedOfflineWallet(OfflineWallet):
     def __init__(self):
