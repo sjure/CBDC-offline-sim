@@ -32,7 +32,7 @@ class FraudUserNode(UserNode):
         """ request money"""
         neigbor_choice = int(random.randint(0, len(self.neighbors)))
         target = self.neighbors[neigbor_choice]
-        amount = self.get_offline_balance()
+        amount = min(self.get_offline_balance(), p.per_tx_volume_limit)
         success = self.send_offline_transaction(amount, target)
         if (success):
             balance = self.init_balance - self.money_sent
