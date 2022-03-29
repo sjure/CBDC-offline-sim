@@ -13,7 +13,6 @@ logger = logging.getLogger("CBDCSimLog")
 
 class UserNode(Node):
     """ User node """
-    transactions = dict()
     is_online = False
     init_deposit = False
     type = USER
