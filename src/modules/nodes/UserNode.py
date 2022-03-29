@@ -89,16 +89,14 @@ class UserNode(Node):
         neigbor_choice = int(random.randint(0, len(self.neighbors)))
         target = self.neighbors[neigbor_choice]
         amount = max(int(random.normal(p.tx_volume["mean"], p.tx_volume["std"])),1)
+        if (self.balance < amount):
+            return
         self.check_online()
         target.check_online()
         if (self.is_online and target.is_online):
-            if (self.balance < amount):
-                return
             # Do online transaction, both users can check the validity in the intermediary
             self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
         elif (self.is_online and not target.is_online):
-            if (self.balance < amount):
-                return
             is_valid, tx, sign = self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
             if (is_valid):
                 target.recieve_confirmation(tx,sign)
