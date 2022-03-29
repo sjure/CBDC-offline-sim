@@ -33,6 +33,6 @@ class InputsConfig:
     
     client_preventions = False
     lockout_after_consolidation = False
-    approve_fradulent_transactions_by_intermediary = False
+    intemediary_refund_payee_fradulent_transactions = False
     per_tx_volume_limit = float("inf")
     collaberative_security = False
