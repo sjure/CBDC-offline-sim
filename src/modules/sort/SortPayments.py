@@ -1,14 +1,14 @@
 
 
-def topologicalSort(payment_number,visited_payments,stack, payment_address_map, payments):
+def topologicalSort(payment_number, visited_payments, stack, payment_address_map, payments):
     visited_payments[payment_number] = True
 
     for i in payment_address_map[payments[payment_number].tx.from_address]:
         if not visited_payments[i]:
-            topologicalSort(i, visited_payments,stack, payment_address_map, payments)
-    
-    stack.append(payments[payment_number])
+            topologicalSort(i, visited_payments, stack,
+                            payment_address_map, payments)
 
+    stack.append(payments[payment_number])
 
 
 def sort_payments(payments):
@@ -23,6 +23,6 @@ def sort_payments(payments):
 
     for i in range(len(payments)):
         if not visited_payments[i]:
-            topologicalSort(i,visited_payments,stack, payment_address_map, payments)
+            topologicalSort(i, visited_payments, stack,
+                            payment_address_map, payments)
     return stack[::-1]
-

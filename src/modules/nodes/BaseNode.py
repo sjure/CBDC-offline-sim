@@ -1,7 +1,9 @@
 import secrets
 from abc import ABC, abstractmethod
-from modules.Types import NETWORK, INTERMEDIARY,USER, FRAUD_USER
+from modules.Types import NETWORK, INTERMEDIARY, USER, FRAUD_USER
 from modules.wallets.OfflineWallet import OfflineWallet
+
+
 class Node(ABC):
     """ Node object to use in the graph """
     type = None
@@ -35,7 +37,7 @@ class Node(ABC):
 
     def __str__(self):
         return f"{self.type} Node {self.node_id} account_id={self.account_id} offline_account_id={self.ow.account_id}"
-    
+
     def __repr__(self):
         return self.__str__()
 

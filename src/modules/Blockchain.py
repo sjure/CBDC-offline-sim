@@ -4,9 +4,12 @@ import json
 import time
 import logging
 logger = logging.getLogger("CBDCSimLog")
+
+
 class Block():
     """ Block """
-    def __init__(self,transactions,height, previous_block_hash):
+
+    def __init__(self, transactions, height, previous_block_hash):
         self.transactions = transactions
         self.height = height
         self.previous_block_hash = previous_block_hash
@@ -16,8 +19,8 @@ class Block():
         """ Returns the block object """
         return {
             "tx": [transaction.transaction() for transaction in self.transactions],
-            "height":self.height,
-            "prev_hash":self.previous_block_hash
+            "height": self.height,
+            "prev_hash": self.previous_block_hash
         }
 
     def sign_block(self):
@@ -31,23 +34,25 @@ class Block():
     def __repr__(self):
         return json.dumps(self.block())
 
+
 class Transaction():
     """ Transaction """
+
     def __init__(self, to_address, from_address, amount):
         self.to_address = to_address
         self.from_address = from_address
         self.amount = amount
         self.nonce = secrets.token_hex(16)
         self.id = self.create_id()
-    
+
     def transaction(self):
         """ Returns the transaction object """
         return {
             "to_address": self.to_address,
-            "from_address":self.from_address,
-            "amount":self.amount,
+            "from_address": self.from_address,
+            "amount": self.amount,
         }
-    
+
     def create_id(self):
         """ Returns the sha256 signature of the block """
         block_string = json.dumps(self.transaction())
@@ -69,7 +74,8 @@ class BlockChain:
 
     def init_blockchain():
         """ Initializes the first block of the blockchain with the iv """
-        new_block = Block(BlockChain.queue,len(BlockChain.blocks),BlockChain.iv)
+        new_block = Block(BlockChain.queue, len(
+            BlockChain.blocks), BlockChain.iv)
         BlockChain.blocks.append(new_block)
 
     def check_trigger_new_block():
@@ -82,10 +88,11 @@ class BlockChain:
         if len(BlockChain.blocks) == 0:
             BlockChain.init_blockchain()
         else:
-            new_block = Block(BlockChain.queue,len(BlockChain.blocks),BlockChain.blocks[-1].block_hash)
+            new_block = Block(BlockChain.queue, len(
+                BlockChain.blocks), BlockChain.blocks[-1].block_hash)
             BlockChain.blocks.append(new_block)
         BlockChain.queue = []
-    
+
     def verify_block_chain():
         prev_hash = BlockChain.iv
         for block_height, block in enumerate(BlockChain.blocks):
@@ -97,7 +104,7 @@ class BlockChain:
                 if block.previous_block_hash != prev_hash:
                     return False
             prev_hash = hash
-            
+
         return True
 
     def balance_of(address):
@@ -115,14 +122,15 @@ class BlockChain:
                 balance -= transaction.amount
         return balance
 
-    def is_valid_transaction(from_address,value):
+    def is_valid_transaction(from_address, value):
         balance_of_sender = BlockChain.balance_of(from_address)
         return value <= balance_of_sender
 
     def add_transaction_from_offline(tx):
         is_valid = BlockChain.is_valid_transaction(tx.from_address, tx.amount)
         if not is_valid:
-            logger.error(f"ERROR: Invalid offline transaction to_address={tx.to_address} from_address={tx.from_address} value={tx.amount}")
+            logger.error(
+                f"ERROR: Invalid offline transaction to_address={tx.to_address} from_address={tx.from_address} value={tx.amount}")
             return False
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
@@ -131,18 +139,19 @@ class BlockChain:
     def add_transaction(to_address, from_address, value):
         is_valid = BlockChain.is_valid_transaction(from_address, value)
         if not is_valid:
-            logger.error(f"ERROR: Invalid transaction to_address={to_address} from_address={from_address} value={value}")
+            logger.error(
+                f"ERROR: Invalid transaction to_address={to_address} from_address={from_address} value={value}")
             return False
-        tx = Transaction(to_address, from_address,value)
+        tx = Transaction(to_address, from_address, value)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
         return tx
-    
-    def deposit_money(address,value):
+
+    def deposit_money(address, value):
         tx = Transaction(address, "", value)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
-    
+
     def has_transaction(tx):
         id = tx.id
         for block in BlockChain.blocks:
@@ -162,8 +171,8 @@ class BlockChain:
 if __name__ == "__main__":
     bc = BlockChain
     bc.deposit_money("sjur", 100)
-    bc.add_transaction("dennis","sjur",1)
-    bc.add_transaction("sjur","sjur",99)
+    bc.add_transaction("dennis", "sjur", 1)
+    bc.add_transaction("sjur", "sjur", 99)
     print(bc.blocks)
     print(bc.queue)
     print(bc.balance_of("dennis"))

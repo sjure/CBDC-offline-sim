@@ -1,6 +1,7 @@
 from queue import Queue
 from modules.Types import NETWORK, INTERMEDIARY
 
+
 def bfs_to_intermediary(start_node):
     """ BFS search """
     visited = set()

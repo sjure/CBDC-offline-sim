@@ -8,6 +8,7 @@ from Statistics import Statistics
 from EventOrganizer import EventOrganizer as eo
 logger = logging.getLogger("CBDCSimLog")
 
+
 class NetworkNode(Node):
     """ Network Node, the simulation of routers in the network"""
     is_online = True
@@ -15,7 +16,7 @@ class NetworkNode(Node):
     current_offline_ticks = 0
     type = NETWORK
 
-    def __init__(self, node_id=-1,**attr):
+    def __init__(self, node_id=-1, **attr):
         super().__init__(node_id=node_id, **attr)
 
     def handle_faults(self):
@@ -23,7 +24,8 @@ class NetworkNode(Node):
             if (poisson(1/p.network_failure_rate)):
                 self.is_online = False
                 logger.info("network -> offline")
-                self.ticks_to_online = int(exponential(p.network_recovery_rate))
+                self.ticks_to_online = int(
+                    exponential(p.network_recovery_rate))
                 logger.info(f"{self.ticks_to_online} ticks to online")
                 Statistics.network_failures += 1
         else:

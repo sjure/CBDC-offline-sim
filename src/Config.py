@@ -5,13 +5,13 @@ class InputsConfig:
     tx_per_node = 20
     graph_type = "ba"
     graph_params = {
-        "n":100,
-        "m":3,
+        "n": 100,
+        "m": 3,
     }
     fraud_node_percentage = 0.1
     tx_rate = 5
     tx_rate_fraud = 5
-    tx_volume={ 
+    tx_volume = {
         "mean": 100,
         "std": 40
     }
@@ -31,9 +31,10 @@ class InputsConfig:
     network_recovery_rate = 5
     intermediary_failure_rate = 30
     intermediary_recovery_rate = 5
-    
+
+    # Testing parameters
     intemediary_refund_payee_fradulent_transactions = True
     per_tx_amount_limit = 1000
     client_preventions = False
-    lockout_after_consolidation = True
+    lockout_after_consolidation = False
     collaberative_security = False

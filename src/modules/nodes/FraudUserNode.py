@@ -11,22 +11,24 @@ from Config import InputsConfig as p
 from EventOrganizer import EventOrganizer as eo
 logger = logging.getLogger("CBDCSimLog")
 
+
 class FraudUserNode(UserNode):
     """ Fradulent User node """
     type = FRAUD_USER
     money_sent = 0
     init_balance = 0
 
-    def __init__(self, node_id=-1,**attr):
+    def __init__(self, node_id=-1, **attr):
         super().__init__(node_id=node_id, **attr)
-        self.offline_target = max(int(random.normal(p.fraud_user_balance_preferance["mean"], p.fraud_user_balance_preferance["std"])), 0)
+        self.offline_target = max(int(random.normal(
+            p.fraud_user_balance_preferance["mean"], p.fraud_user_balance_preferance["std"])), 0)
         self.ow = ManipulatedOfflineWallet()
         self.tx_rate = p.tx_rate_fraud
 
-    def approve_recieve_offline_transaction(self,payer_node, amount):
+    def approve_recieve_offline_transaction(self, payer_node, amount):
         return True
-    
-    def update_connectivity(self,is_online,intermediary):
+
+    def update_connectivity(self, is_online, intermediary):
         pass
 
     def send_money(self):
@@ -37,7 +39,8 @@ class FraudUserNode(UserNode):
         success = self.send_offline_transaction(amount, target)
         if (success):
             balance = self.init_balance - self.money_sent
-            logger.info(f"{self.node_id} {self.ow.account_id} balance {balance}, sending {amount}")
+            logger.info(
+                f"{self.node_id} {self.ow.account_id} balance {balance}, sending {amount}")
             if (amount > balance):
                 if (balance <= 0):
                     Statistics.fradulent_tx_sent += 1

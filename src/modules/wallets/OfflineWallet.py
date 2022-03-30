@@ -3,6 +3,8 @@ import json
 import operator
 import hashlib
 from modules.Blockchain import Transaction
+
+
 class OfflinePayment():
     def __init__(self, tx, counter, signature):
         self.tx = tx
@@ -14,10 +16,10 @@ class OfflinePayment():
         """ Returns the payment object """
         tx = self.tx.transaction()
         return {
-            "tx":tx,
-            "counter":self.counter,
+            "tx": tx,
+            "counter": self.counter,
         }
-    
+
     def create_id(self):
         """ Returns the sha256 signature of the block """
         block_string = json.dumps(self.pm()).encode('utf-8')
@@ -26,19 +28,18 @@ class OfflinePayment():
     def __str__(self):
         tx = self.tx.transaction()
         payment = {
-            "tx":tx,
-            "counter":self.counter,
+            "tx": tx,
+            "counter": self.counter,
         }
         return json.dumps(payment)
 
     def __repr__(self):
         tx = self.tx.transaction()
         payment = {
-            "tx":tx,
-            "counter":self.counter,
+            "tx": tx,
+            "counter": self.counter,
         }
         return json.dumps(payment)
-
 
 
 class OfflineWallet():
@@ -58,8 +59,8 @@ class OfflineWallet():
 
     def _sign(self, transaction):
         # sign with private key of wallet
-        return 
-    
+        return
+
     def deposit(self, tx, server_signature_of_deposit):
         """Converts online funds into offline funds, increases the offine balance."""
         # Validate server_signature_of_deposit
@@ -73,8 +74,9 @@ class OfflineWallet():
         self.counter += 1
         self.balance -= amount
         tx = Transaction(reciever, self.account_id, amount)
-        signature = self._sign([-amount, self.account_id, reciever, self.counter]) 
-        op = OfflinePayment(tx, self.counter,signature)
+        signature = self._sign(
+            [-amount, self.account_id, reciever, self.counter])
+        op = OfflinePayment(tx, self.counter, signature)
         return op
 
     def pay(self, amount, reciever):
@@ -82,9 +84,9 @@ class OfflineWallet():
         self.counter += 1
         self.balance -= amount
         tx = Transaction(reciever, self.account_id, amount)
-        signature = self._sign([amount, self.account_id, reciever, self.counter])
+        signature = self._sign(
+            [amount, self.account_id, reciever, self.counter])
         return OfflinePayment(tx, self.counter, signature)
-
 
     def collect(self, payment: OfflinePayment):
         """ Verifies an offline payment and applies it to the offline balance by increasing it with the
@@ -97,11 +99,10 @@ class OfflineWallet():
     def get_balance(self):
         """ Returns the current offline balance stored inside the TEE storage."""
         return self.balance
-    
 
 
 if __name__ == "__main__":
     ow = OfflineWallet()
-    ow.deposit(100,"online-wallet","")
-    ow.pay(50,"A")
+    ow.deposit(100, "online-wallet", "")
+    ow.pay(50, "A")
     print(ow.get_balance())

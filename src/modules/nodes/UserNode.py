@@ -11,20 +11,23 @@ from EventOrganizer import EventOrganizer as eo
 from modules.wallets.OfflineWallet import OfflinePayment
 logger = logging.getLogger("CBDCSimLog")
 
+
 class UserNode(Node):
     """ User node """
     is_online = False
     init_deposit = False
     type = USER
-    def __init__(self, node_id=-1,**attr):
+
+    def __init__(self, node_id=-1, **attr):
         super().__init__(node_id=node_id, **attr)
         self.node_id = node_id
-        self.offline_target = max(int(random.normal(p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"])), 0)
+        self.offline_target = max(int(random.normal(
+            p.offline_balance_preferance["mean"], p.offline_balance_preferance["std"])), 0)
         self.tx_rate = p.tx_rate
         self.payment_log = []
         self.ban_list = set()
 
-    def redeem_offline_transactions(self,intermediary):
+    def redeem_offline_transactions(self, intermediary):
         payments = self.payment_log
         ban_list = intermediary.redeem_payments(payments, self)
         if p.lockout_after_consolidation:
@@ -42,20 +45,23 @@ class UserNode(Node):
         if offline_balance < self.offline_target:
             diff_from_target = self.offline_target - offline_balance
             if diff_from_target <= online_balance:
-                success, tx, signature = intermediary.offline_deposit(self,diff_from_target)
-                offline_payment = self.ow.deposit(tx,signature)
+                success, tx, signature = intermediary.offline_deposit(
+                    self, diff_from_target)
+                offline_payment = self.ow.deposit(tx, signature)
                 self.payment_log.append(offline_payment)
             else:
-                success, tx, signature = intermediary.offline_deposit(self,online_balance)
-                offline_payment = self.ow.deposit(tx,signature)
+                success, tx, signature = intermediary.offline_deposit(
+                    self, online_balance)
+                offline_payment = self.ow.deposit(tx, signature)
                 self.payment_log.append(offline_payment)
         else:
             diff_from_target = offline_balance - self.offline_target
-            withdraw_payment = self.ow.withdraw(self.account_id, diff_from_target)
+            withdraw_payment = self.ow.withdraw(
+                self.account_id, diff_from_target)
             self.payment_log.append(withdraw_payment)
             intermediary.offline_withdraw(self, withdraw_payment)
 
-    def update_connectivity(self,is_online,intermediary):
+    def update_connectivity(self, is_online, intermediary):
         if (self.is_online == is_online):
             return
         was_offline = not self.is_online
@@ -64,16 +70,17 @@ class UserNode(Node):
         self.is_online = is_online
         self.closest_intermediary = intermediary
 
-    def check_payer_node(self,payer_node):
+    def check_payer_node(self, payer_node):
         if p.client_preventions:
             pass
         if p.lockout_after_consolidation:
             if payer_node.get_offline_address() in self.ban_list:
-                logger.error(f"ERROR: payer address in ban list {payer_node.get_offline_address()}")
+                logger.error(
+                    f"ERROR: payer address in ban list {payer_node.get_offline_address()}")
                 return False
         return True
 
-    def approve_recieve_offline_transaction(self,payer_node, amount):
+    def approve_recieve_offline_transaction(self, payer_node, amount):
         if (amount > p.per_tx_amount_limit):
             return False
         if (self.is_online):
@@ -84,53 +91,62 @@ class UserNode(Node):
     def send_offline_transaction(self, amount, target):
         if amount <= 0:
             return False
-        target_accepts_transaction = target.approve_recieve_offline_transaction(self, amount)
+        target_accepts_transaction = target.approve_recieve_offline_transaction(
+            self, amount)
         if (target_accepts_transaction):
-            success, payment, payment_log = self.create_offline_transaction(amount, target)
+            success, payment, payment_log = self.create_offline_transaction(
+                amount, target)
             if (success):
                 Statistics.offline_tx += 1
                 Statistics.offline_tx_volume += payment.tx.amount
-                logger.info(f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
+                logger.info(
+                    f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
                 pm_success = target.collect(payment)
                 if pm_success:
                     target.sync_payment_log(payment_log)
                 else:
-                    logger.info(f"ERROR: Payment already in collection, rejected payment {payment}")
+                    logger.info(
+                        f"ERROR: Payment already in collection, rejected payment {payment}")
                 return True
             else:
-                logger.info(f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
+                logger.info(
+                    f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
         else:
-            logger.info(f"Target did not accept transaction target={target.get_offline_address()} amount={amount} from={self.get_offline_address()}")
+            logger.info(
+                f"Target did not accept transaction target={target.get_offline_address()} amount={amount} from={self.get_offline_address()}")
         return False
 
     def send_money(self):
         """ request money"""
         neigbor_choice = int(random.randint(0, len(self.neighbors)))
         target = self.neighbors[neigbor_choice]
-        amount = min(max(int(random.normal(p.tx_volume["mean"], p.tx_volume["std"])),1),  p.per_tx_amount_limit)
+        amount = min(max(int(random.normal(
+            p.tx_volume["mean"], p.tx_volume["std"])), 1),  p.per_tx_amount_limit)
         if (self.balance < amount):
             return
         self.check_online()
         target.check_online()
         if (self.is_online and target.is_online):
             # Do online transaction, both users can check the validity in the intermediary
-            self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
+            self.closest_intermediary.send_transaction(
+                self.node_id, target.node_id, amount)
         elif (self.is_online and not target.is_online):
-            # If the payee is offline, the payer will confirm the transaction with the intermediary 
+            # If the payee is offline, the payer will confirm the transaction with the intermediary
             # and send the signatrue as a receipt
-            is_valid, tx, sign = self.closest_intermediary.send_transaction(self.node_id, target.node_id, amount)
+            is_valid, tx, sign = self.closest_intermediary.send_transaction(
+                self.node_id, target.node_id, amount)
             if (is_valid):
-                target.recieve_confirmation(tx,sign)
+                target.recieve_confirmation(tx, sign)
         else:
             # The case if both are offline, and if self is offline and receiver is online
             logger.info("Offline tx")
             self.send_offline_transaction(amount, target)
 
-    def recieve_confirmation(self,tx,sign):
+    def recieve_confirmation(self, tx, sign):
         # Check signature of intermediary with intermediary certificate
         return len(sign)
 
-    def create_offline_transaction(self,amount,reciever):
+    def create_offline_transaction(self, amount, reciever):
         if (self.offline_sufficient_funds(amount)):
             address = reciever.get_offline_address()
             payment = self.ow.pay(amount, address)
@@ -145,17 +161,16 @@ class UserNode(Node):
 
     def get_offline_balance(self):
         return self.ow.get_balance()
-    
+
     def get_offline_address(self):
         return self.ow.account_id
 
     def get_closest_intermediary(self):
         return bfs_to_intermediary(self)
-    
+
     def do_transaction(self):
         """ Do transaction as main method of the user node """
         self.send_money()
-    
 
     def check_online(self):
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
@@ -168,7 +183,7 @@ class UserNode(Node):
         if (has_connection_to_intermediary):
             return True, intermediary.get_funds_of_node(self.account_id)
         return False, 0
-    
+
     def collect(self, payment: OfflinePayment):
         payment_already_collected = self.has_payment(payment)
         if (payment_already_collected):
