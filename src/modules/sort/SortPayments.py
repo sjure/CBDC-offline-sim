@@ -17,10 +17,18 @@ def sort_payments(payments):
     payment_address_map = {}
     for payment_number, payment in enumerate(payments):
         if payment.tx.from_address in payment_address_map.keys():
-            payment_address_map[payment.tx.from_address].append(payment_number)
+            payment_address_map[payment.tx.from_address].append(
+                (payment_number, payment.counter))
         else:
-            payment_address_map[payment.tx.from_address] = [payment_number]
+            payment_address_map[payment.tx.from_address] = [
+                (payment_number, payment.counter)]
 
+    # Sort each user outbound edge after counter
+    for address in payment_address_map.keys():
+        payment_address_map[address].sort(
+            key=lambda x: x[1])
+        payment_address_map[address] = [i[0]
+                                        for i in payment_address_map[address]]
     for i in range(len(payments)):
         if not visited_payments[i]:
             topologicalSort(i, visited_payments, stack,
