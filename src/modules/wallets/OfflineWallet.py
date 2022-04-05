@@ -12,6 +12,12 @@ class UserBal():
         self.counter = counter
         self.prev_hash = prev_hash
 
+    def __repr__(self):
+        return json.dumps({
+            "balance": self.balance,
+            "counter": self.counter,
+        })
+
 
 class OfflinePayment():
     def __init__(self, tx, signature):
@@ -77,7 +83,6 @@ class OfflineWallet():
         self.balance += tx.amount
         op = OfflinePayment(
             tx, server_signature_of_deposit)
-        self.prev_hash = tx.hash
         return op
 
     def withdraw(self, reciever, amount):
