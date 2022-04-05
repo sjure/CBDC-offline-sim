@@ -21,15 +21,16 @@ class IntermediaryNode(Node):
     type = INTERMEDIARY
     fradulent_transactions = []
     server_ban_list = set()
+    deposit_counter = {}
 
     def __init__(self, sim=None, node_id=-1, **attr):
         super().__init__(node_id=node_id, **attr)
 
     def _sign(self, tx):
-        signature = f"signed-transaction-{tx.id}-by-intermediary"
+        signature = f"signed-transaction-{tx}-by-intermediary"
         return tx, signature
 
-    def add_transaction_to_bc(self, from_account, to_account, amount):
+    def add_transaction_to_bc(self, from_account, to_account, amount, counter=0, depositType=False):
         if (self.get_funds_of_node(from_account) < amount):
             logger.error(
                 f"ERROR, not enough funds {from_account} {self.get_funds_of_node(from_account)}, {amount}")
@@ -38,7 +39,8 @@ class IntermediaryNode(Node):
             logger.error(
                 f"ERROR, value less than zero {self.get_funds_of_node(from_account)}, {amount}")
             return False, None, ""
-        tx_confirmed = bc.add_transaction(to_account, from_account, amount)
+        tx_confirmed = bc.add_transaction(
+            to_account, from_account, amount, counter, depositType)
         tx, signature = self._sign(tx_confirmed)
         return True, tx, signature
 
@@ -55,9 +57,17 @@ class IntermediaryNode(Node):
         return self.get_funds_of_node(account_id) >= amount
 
     def offline_deposit(self, node, amount):
+        if (node.account_id in self.deposit_counter):
+            self.deposit_counter[node.account_id] += 1
+        else:
+            self.deposit_counter[node.account_id] = 0
         logger.info(
             f"Depost to offline wallet from {node.account_id} to {node.get_offline_address()} amount {amount}")
-        return self.add_transaction_to_bc(node.account_id, node.get_offline_address(), amount)
+        return self.add_transaction_to_bc(node.account_id,
+                                          node.get_offline_address(),
+                                          amount,
+                                          counter=self.deposit_counter[node.account_id],
+                                          depositType=True)
 
     def offline_withdraw(self, node, withdraw_payment):
         logger.info(

@@ -18,10 +18,10 @@ def sort_payments(payments):
     for payment_number, payment in enumerate(payments):
         if payment.tx.from_address in payment_address_map.keys():
             payment_address_map[payment.tx.from_address].append(
-                (payment_number, payment.counter))
+                (payment_number, payment.tx.counter))
         else:
             payment_address_map[payment.tx.from_address] = [
-                (payment_number, payment.counter)]
+                (payment_number, payment.tx.counter)]
 
     # Sort each user outbound edge after counter
     for address in payment_address_map.keys():

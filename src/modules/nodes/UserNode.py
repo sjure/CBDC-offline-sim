@@ -1,6 +1,7 @@
 import math
 import logging
 from numpy import random
+import hashlib
 from Statistics import Statistics
 from modules.events.UserEvent import UserEvent
 from modules.nodes.BaseNode import Node
@@ -8,7 +9,8 @@ from modules.Types import USER
 from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p
 from EventOrganizer import EventOrganizer as eo
-from modules.wallets.OfflineWallet import OfflinePayment
+from modules.sort.SortPayments import sort_payments
+from modules.wallets.OfflineWallet import OfflinePayment, UserBal
 logger = logging.getLogger("CBDCSimLog")
 
 
@@ -26,6 +28,7 @@ class UserNode(Node):
         self.tx_rate = p.tx_rate
         self.payment_log = []
         self.ban_list = set()
+        self.local_ban_list = set()
 
     def redeem_offline_transactions(self, intermediary):
         payments = self.payment_log
@@ -72,7 +75,10 @@ class UserNode(Node):
 
     def check_payer_node(self, payer_node):
         if p.client_preventions:
-            pass
+            if payer_node.get_offline_address() in self.local_ban_list:
+                logger.error(
+                    f"ERROR: payer address in local ban list {payer_node.get_offline_address()}")
+                return False
         if p.lockout_after_consolidation:
             if payer_node.get_offline_address() in self.ban_list:
                 logger.error(
@@ -101,13 +107,8 @@ class UserNode(Node):
                 Statistics.offline_tx_volume += payment.tx.amount
                 logger.info(
                     f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
-                pm_success = target.collect(payment)
-                if pm_success:
-                    target.sync_payment_log(payment_log)
-                else:
-                    logger.info(
-                        f"ERROR: Payment already in collection, rejected payment {payment}")
-                return True
+                pm_success = target.receive_payment(payment, payment_log)
+                return pm_success
             else:
                 logger.info(
                     f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
@@ -150,6 +151,7 @@ class UserNode(Node):
         if (self.offline_sufficient_funds(amount)):
             address = reciever.get_offline_address()
             payment = self.ow.pay(amount, address)
+            self.payment_log.append(payment)
             payment_log = self.get_payment_log()
             return True, payment, payment_log
         return False, None, []
@@ -184,12 +186,67 @@ class UserNode(Node):
             return True, intermediary.get_funds_of_node(self.account_id)
         return False, 0
 
-    def collect(self, payment: OfflinePayment):
-        payment_already_collected = self.has_payment(payment)
-        if (payment_already_collected):
-            return False
-        self.ow.collect(payment)
-        self.payment_log.append(payment)
+    def validate_log(self, payment_log):
+        """ Validate the payment log """
+        if (len(payment_log) == 0):
+            return False, None
+        sorted_log = sort_payments(payment_log)
+        node_sums = {}
+        for payment in sorted_log:
+            node_sums[payment.tx.from_address] = UserBal(
+                0, 0, payment.tx.from_address)
+            node_sums[payment.tx.to_address] = UserBal(
+                0, 0, payment.tx.to_address)
+
+        for payment in sorted_log:
+            # Validate signature of payment
+            tx = payment.tx
+            if node_sums[tx.from_address].counter >= tx.counter:
+                return False, tx.from_address
+            node_sums[tx.from_address].counter = tx.counter
+            node_sums[tx.to_address].balance += tx.amount
+            if not tx.depositType:
+                transaction_hash = tx.create_hash()
+                previous_hash = node_sums[tx.from_address].hash
+                combined_hash = hashlib.sha256(
+                    transaction_hash + previous_hash).hexdigest()
+                if combined_hash != payment.signature:
+                    return False, tx.from_address
+                node_sums[tx.to_address].balance -= tx.amount
+                if node_sums[tx.to_address].balance < 0:
+                    return False, tx.from_address
+        return True, None
+
+    def receive_payment(self, payment_received: OfflinePayment, payment_log):
+
+        if p.client_preventions:
+            successfull_validate, address_of_fraud = self.validate_log(
+                payment_log, payment_received)
+            if payment_received not in payment_log:
+                successfull_validate = False
+            if (not successfull_validate):
+                self.local_ban_list.add(payment_received.tx.from_address)
+                logger.info(
+                    f"Unsuccessfull validate payment from {payment_received.tx.from_address} to {payment_received.tx.to_address} amount {payment_received.tx.amount}")
+                logger.info(
+                    f"Add {payment_received.tx.from_address} to blacklist. New blacklist {self.local_blacklist}")
+                return False
+        self.sync_payment_log(payment_log)
+        if p.client_preventions:
+            successfull_validate, address_of_fraud = self.validate_log(
+                self.payment_log)
+            if not successfull_validate:
+                logger.info(
+                    "Unsuccessfull validate payment after sync, fraudster {address_of_fraud}")
+                self.local_ban_list.add(address_of_fraud)
+                return False
+
+        success = self.ow.collect(payment_received)
+
+        if p.collaberative_security:
+            self.collaberative_check()
+
+        return success
 
     def sync_payment_log(self, payment_log):
         for payment in payment_log:

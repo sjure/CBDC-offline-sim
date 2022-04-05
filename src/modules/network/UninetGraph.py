@@ -6,6 +6,7 @@ ONLINE = False
 URL = "http://www.topology-zoo.org/files/Uninett2011.graphml"
 PATH = "assets/graphs/uninet-2011.xml"
 
+
 class UninetGraph(Graph):
 
     def __init__(self, **attr):
@@ -18,8 +19,10 @@ class UninetGraph(Graph):
         graph = tree.find("{http://graphml.graphdrawing.org/xmlns}graph")
         nodes = graph.findall("{http://graphml.graphdrawing.org/xmlns}node")
         edges = graph.findall("{http://graphml.graphdrawing.org/xmlns}edge")
-        self.graph_nodes = [{"id": n.attrib["id"], "label": n.getchildren()[-1].text.replace(" ","_")} for n in nodes]
-        self.graph_edges = [(e.attrib["source"], e.attrib["target"]) for e in edges]
+        self.graph_nodes = [{"id": n.attrib["id"], "label": n.getchildren(
+        )[-1].text.replace(" ", "_")} for n in nodes]
+        self.graph_edges = [(e.attrib["source"], e.attrib["target"])
+                            for e in edges]
         self._init_nodes()
         self._init_edges()
 
@@ -30,12 +33,12 @@ class UninetGraph(Graph):
     def _init_edges(self):
         self.add_edges_from(self.graph_edges)
 
-    def get_graph_from_url(self,url):
+    def get_graph_from_url(self, url):
         r = requests.get(url)
         return r.content
 
     def get_graph_from_xml(self):
-        with open(PATH,"rb") as f:
+        with open(PATH, "rb") as f:
             xml = f.read()
         return xml
 

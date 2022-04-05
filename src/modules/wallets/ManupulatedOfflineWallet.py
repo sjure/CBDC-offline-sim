@@ -13,8 +13,10 @@ class ManipulatedOfflineWallet(OfflineWallet):
     def pay(self, amount, reciever):
         """Creates an offine payment object."""
         self.counter += 1
-        # self.balance -= amount
-        tx = Transaction(reciever, self.account_id, amount)
-        signature = self._sign(
-            [amount, self.account_id, reciever, self.counter])
-        return OfflinePayment(tx, self.counter, signature)
+        #self.balance -= amount
+        tx = Transaction(reciever, self.account_id,
+                         amount, counter=self.counter)
+        signature = self._sign(tx, self.prev_hash)
+        op = OfflinePayment(tx, signature)
+        self.prev_hash = tx.hash
+        return op

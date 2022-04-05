@@ -38,12 +38,13 @@ class Block():
 class Transaction():
     """ Transaction """
 
-    def __init__(self, to_address, from_address, amount):
+    def __init__(self, to_address, from_address, amount, counter, depositType=False):
         self.to_address = to_address
         self.from_address = from_address
         self.amount = amount
-        self.nonce = secrets.token_hex(16)
-        self.id = self.create_id()
+        self.counter = counter
+        self.hash = self.create_hash()
+        self.depositType = depositType
 
     def transaction(self):
         """ Returns the transaction object """
@@ -51,12 +52,13 @@ class Transaction():
             "to_address": self.to_address,
             "from_address": self.from_address,
             "amount": self.amount,
+            "counter": self.counter,
         }
 
-    def create_id(self):
+    def create_hash(self):
         """ Returns the sha256 signature of the block """
         block_string = json.dumps(self.transaction())
-        transaction_string = (block_string + self.nonce).encode('utf-8')
+        transaction_string = (block_string).encode('utf-8')
         return hashlib.sha256(transaction_string).hexdigest()
 
     def __str__(self):
@@ -136,24 +138,23 @@ class BlockChain:
         BlockChain.check_trigger_new_block()
         return True
 
-    def add_transaction(to_address, from_address, value):
+    def add_transaction(to_address, from_address, value, counter, depositType):
         is_valid = BlockChain.is_valid_transaction(from_address, value)
         if not is_valid:
             logger.error(
                 f"ERROR: Invalid transaction to_address={to_address} from_address={from_address} value={value}")
             return False
-        tx = Transaction(to_address, from_address, value)
+        tx = Transaction(to_address, from_address, value, counter, depositType)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
         return tx
 
     def deposit_money(address, value):
-        tx = Transaction(address, "", value)
+        tx = Transaction(address, "", value, 0, True)
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
 
     def has_transaction(tx):
-        id = tx.id
         for block in BlockChain.blocks:
             if tx in block.transactions:
                 return True
