@@ -60,7 +60,7 @@ class IntermediaryNode(Node):
         if (node.account_id in self.deposit_counter):
             self.deposit_counter[node.account_id] += 1
         else:
-            self.deposit_counter[node.account_id] = 0
+            self.deposit_counter[node.account_id] = 1
         logger.info(
             f"Depost to offline wallet from {node.account_id} to {node.get_offline_address()} amount {amount}")
         return self.add_transaction_to_bc(node.account_id,
