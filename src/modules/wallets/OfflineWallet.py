@@ -3,6 +3,7 @@ import json
 import operator
 import hashlib
 from modules.Blockchain import Transaction
+from Config import InputsConfig as p
 
 
 class UserBal():
@@ -107,7 +108,7 @@ class OfflineWallet():
         # Check payment certificate is from sender
         # Check check signature with correct input
         if (payment.tx.from_address in self.address_counter):
-            if (self.address_counter[payment.tx.from_address] <= payment.tx.counter):
+            if (self.address_counter[payment.tx.from_address] >= payment.tx.counter):
                 return False
         self.address_counter[payment.tx.from_address] = payment.tx.counter
         self.balance += payment.tx.amount

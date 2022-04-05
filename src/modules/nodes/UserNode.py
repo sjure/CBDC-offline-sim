@@ -218,7 +218,6 @@ class UserNode(Node):
         return True, None
 
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
-
         if p.client_preventions:
             successfull_validate, address_of_fraud = self.validate_log(
                 payment_log, payment_received)
