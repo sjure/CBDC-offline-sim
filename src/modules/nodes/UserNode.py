@@ -202,25 +202,29 @@ class UserNode(Node):
             # Validate signature of payment
             tx = payment.tx
             if node_sums[tx.from_address].counter >= tx.counter:
+                print(1)
                 return False, tx.from_address
             node_sums[tx.from_address].counter = tx.counter
             node_sums[tx.to_address].balance += tx.amount
             if not tx.depositType:
                 transaction_hash = tx.create_hash()
-                previous_hash = node_sums[tx.from_address].hash
+                previous_hash = node_sums[tx.from_address].prev_hash
                 combined_hash = hashlib.sha256(
-                    transaction_hash + previous_hash).hexdigest()
+                    transaction_hash.encode('utf-8') + previous_hash.encode('utf-8')).hexdigest()
                 if combined_hash != payment.signature:
+                    print(2)
                     return False, tx.from_address
                 node_sums[tx.to_address].balance -= tx.amount
                 if node_sums[tx.to_address].balance < 0:
+                    print(3)
                     return False, tx.from_address
+                node_sums[tx.from_address].prev_hash = tx.hash
         return True, None
 
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
         if p.client_preventions:
             successfull_validate, address_of_fraud = self.validate_log(
-                payment_log, payment_received)
+                payment_log)
             if payment_received not in payment_log:
                 successfull_validate = False
             if (not successfull_validate):
@@ -228,8 +232,10 @@ class UserNode(Node):
                 logger.info(
                     f"Unsuccessfull validate payment from {payment_received.tx.from_address} to {payment_received.tx.to_address} amount {payment_received.tx.amount}")
                 logger.info(
-                    f"Add {payment_received.tx.from_address} to blacklist. New blacklist {self.local_blacklist}")
+                    f"Add {payment_received.tx.from_address} to blacklist. New blacklist {self.local_ban_list}")
                 return False
+            # else:
+            #     print("Successfull validate payment")
         self.sync_payment_log(payment_log)
         if p.client_preventions:
             successfull_validate, address_of_fraud = self.validate_log(
@@ -238,7 +244,7 @@ class UserNode(Node):
                 logger.info(
                     "Unsuccessfull validate payment after sync, fraudster {address_of_fraud}")
                 self.local_ban_list.add(address_of_fraud)
-                return False
+                return True
 
         success = self.ow.collect(payment_received)
 
