@@ -214,8 +214,8 @@ class UserNode(Node):
                 if combined_hash != payment.signature:
                     print(2)
                     return False, tx.from_address
-                node_sums[tx.to_address].balance -= tx.amount
-                if node_sums[tx.to_address].balance < 0:
+                node_sums[tx.from_address].balance -= tx.amount
+                if node_sums[tx.from_address].balance < 0:
                     print(3)
                     return False, tx.from_address
                 node_sums[tx.from_address].prev_hash = tx.hash
