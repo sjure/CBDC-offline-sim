@@ -33,6 +33,7 @@ class Simulate:
         logger.info("============= New run ===============")
         Simulate.add_init_balance(p.balance["mean"], p.balance["std"])
         logger.info("============= Init balances added  ===============")
+        Statistics.print_fradulent_users(Simulate.graph)
         # Statistics.print_all_balances(Simulate.graph)
         eo.generate_events(Simulate.graph)
         logger.info("============= Events Generated ===============")
@@ -41,7 +42,7 @@ class Simulate:
         Simulate.cleanup()
         logger.info(bc.blocks)
         # Statistics.print_all_balances(Simulate.graph)
-        Statistics.print_fradulent_users()
+        Statistics.print_fradulent_user_balances()
         Statistics.print_state()
         logger.info("============= Run End ===============")
 
