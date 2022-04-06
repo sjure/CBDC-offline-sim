@@ -9,6 +9,7 @@ from modules.Types import FRAUD_USER
 from modules.Bfs import bfs_to_intermediary
 from Config import InputsConfig as p
 from EventOrganizer import EventOrganizer as eo
+from modules.wallets.OfflineWallet import OfflinePayment
 logger = logging.getLogger("CBDCSimLog")
 
 
@@ -49,15 +50,20 @@ class FraudUserNode(UserNode):
                     Statistics.fradulent_tx_sent += 1
                     Statistics.fradulent_tx_sent_volume += amount - balance
             self.money_sent += amount
+            self.payment_log = self.payment_log[:1]
+
+    def receive_payment(self, payment_received: OfflinePayment, payment_log):
+        return self.ow.collect(payment_received)
 
     def _init_deposit(self):
         has_connection_to_intermediary, intermediary = self.get_closest_intermediary()
         if has_connection_to_intermediary:
-            self.trigger_reconnected(intermediary)
-            balance = self.ow.get_balance()
-            self.init_balance = balance
-            self.init_deposit = True
-            self.is_online = False
+            if not self.init_deposit:
+                self.trigger_reconnected(intermediary)
+                balance = self.ow.get_balance()
+                self.init_balance = balance
+                self.init_deposit = True
+                self.is_online = False
 
     def tick(self):
         if (not self.init_deposit):

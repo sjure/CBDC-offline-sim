@@ -1,5 +1,4 @@
 """ The intermediary Node """
-import operator
 import logging
 from numpy.random import poisson, exponential
 from modules.events.NetworkEvent import NetworkEvent
@@ -27,7 +26,7 @@ class IntermediaryNode(Node):
         super().__init__(node_id=node_id, **attr)
 
     def _sign(self, tx):
-        signature = f"signed-transaction-{tx}-by-intermediary"
+        signature = f"signed-transaction-{tx.hash}-by-intermediary"
         return tx, signature
 
     def add_transaction_to_bc(self, from_account, to_account, amount, counter=0, depositType=False):
@@ -100,9 +99,9 @@ class IntermediaryNode(Node):
     def redeem_payments(self, payments, node):
         if (len(payments)):
             logger.info(
-                f"Redeem payemnts {node.get_offline_address()} {payments}")
+                f"Redeem payemnts {node.get_offline_address()}")
             # topology sort
-            payments = sort_payments(payments)
+            payments.sort(key=lambda x: x.ts)
             for payment in payments:
                 # Validate certificates
                 # Validate payment with signature and certificate

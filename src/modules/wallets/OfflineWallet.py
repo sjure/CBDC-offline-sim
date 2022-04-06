@@ -2,6 +2,7 @@ import secrets
 import json
 import operator
 import hashlib
+import time
 from modules.Blockchain import Transaction
 from Config import InputsConfig as p
 
@@ -23,6 +24,7 @@ class OfflinePayment():
     def __init__(self, tx, signature):
         self.tx = tx
         self.signature = signature
+        self.ts = time.time_ns()
         self.hash = self.create_hash()
 
     def pm(self):
@@ -54,6 +56,12 @@ class OfflinePayment():
             "signature": self.signature,
         }
         return json.dumps(payment)
+
+    def __eq__(self, other):
+        return self.hash == other.hash
+
+    def __hash__(self):
+        return hash(self.hash)
 
 
 class OfflineWallet():

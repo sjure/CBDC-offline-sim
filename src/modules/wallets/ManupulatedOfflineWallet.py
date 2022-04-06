@@ -18,5 +18,4 @@ class ManipulatedOfflineWallet(OfflineWallet):
                          amount, self.counter)
         signature = self._sign(tx, self.prev_hash)
         op = OfflinePayment(tx, signature)
-        self.prev_hash = tx.hash
         return op

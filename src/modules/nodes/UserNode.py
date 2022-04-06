@@ -29,6 +29,7 @@ class UserNode(Node):
         self.payment_log = []
         self.ban_list = set()
         self.local_ban_list = set()
+        self.fradulent_tx = []
 
     def redeem_offline_transactions(self, intermediary):
         payments = self.payment_log
@@ -76,12 +77,12 @@ class UserNode(Node):
     def check_payer_node(self, payer_node):
         if p.client_preventions:
             if payer_node.get_offline_address() in self.local_ban_list:
-                logger.error(
+                logger.info(
                     f"ERROR: payer address in local ban list {payer_node.get_offline_address()}")
                 return False
         if p.lockout_after_consolidation:
             if payer_node.get_offline_address() in self.ban_list:
-                logger.error(
+                logger.info(
                     f"ERROR: payer address in ban list {payer_node.get_offline_address()}")
                 return False
         return True
@@ -190,20 +191,20 @@ class UserNode(Node):
         """ Validate the payment log """
         if (len(payment_log) == 0):
             return False, None
-        sorted_log = sort_payments(payment_log)
+        payment_log.sort(key=lambda x: x.ts)
         node_sums = {}
-        for payment in sorted_log:
+        fradulent_tx = []
+        for payment in payment_log:
             node_sums[payment.tx.from_address] = UserBal(
                 0, 0, payment.tx.from_address)
             node_sums[payment.tx.to_address] = UserBal(
                 0, 0, payment.tx.to_address)
-
-        for payment in sorted_log:
+        for payment in payment_log:
             # Validate signature of payment
             tx = payment.tx
             if node_sums[tx.from_address].counter >= tx.counter:
-                print(1)
-                return False, tx.from_address
+                logger.info(f"ERROR: counter is not correct {tx}")
+                fradulent_tx.append(payment)
             node_sums[tx.from_address].counter = tx.counter
             node_sums[tx.to_address].balance += tx.amount
             if not tx.depositType:
@@ -212,18 +213,22 @@ class UserNode(Node):
                 combined_hash = hashlib.sha256(
                     transaction_hash.encode('utf-8') + previous_hash.encode('utf-8')).hexdigest()
                 if combined_hash != payment.signature:
-                    print(2)
-                    return False, tx.from_address
+                    logger.info(f"ERROR: Hash signature is not correct {tx}")
+                    fradulent_tx.append(payment)
                 node_sums[tx.from_address].balance -= tx.amount
                 if node_sums[tx.from_address].balance < 0:
-                    print(3)
-                    return False, tx.from_address
+                    logger.info(
+                        f"User balance less than zero, tx={tx}, node_sums={node_sums}")
+                    fradulent_tx.append(payment)
                 node_sums[tx.from_address].prev_hash = tx.hash
-        return True, None
+
+        if len(fradulent_tx):
+            return False, fradulent_tx
+        return True, []
 
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
         if p.client_preventions:
-            successfull_validate, address_of_fraud = self.validate_log(
+            successfull_validate, fradulent_tx = self.validate_log(
                 payment_log)
             if payment_received not in payment_log:
                 successfull_validate = False
@@ -234,30 +239,38 @@ class UserNode(Node):
                 logger.info(
                     f"Add {payment_received.tx.from_address} to blacklist. New blacklist {self.local_ban_list}")
                 return False
-            # else:
-            #     print("Successfull validate payment")
-        self.sync_payment_log(payment_log)
+        # Temporary log to check together
+        # Then if the logs are correct together is new payment log, if not,
+        # the fradulent payments are removed from the combined log
+        combined_log = self.payment_log
+        for pm in payment_log:
+            if pm not in combined_log:
+                combined_log.append(pm)
         if p.client_preventions:
-            successfull_validate, address_of_fraud = self.validate_log(
-                self.payment_log)
+            successfull_validate, fradulent_tx = self.validate_log(
+                combined_log)
             if not successfull_validate:
-                logger.info(
-                    "Unsuccessfull validate payment after sync, fraudster {address_of_fraud}")
-                self.local_ban_list.add(address_of_fraud)
-                return True
+                for pm in fradulent_tx:
+                    tx = pm.tx
+                    logger.info(
+                        f"Unsuccessfull validate payment after sync, fraudster {tx.from_address}")
+                    if pm not in self.fradulent_tx:
+                        self.fradulent_tx.append(pm)
+                    combined_log.remove(pm)
+                    if tx.from_address == payment_received.tx.from_address:
+                        self.local_ban_list.add(
+                            payment_received.tx.from_address)
+                        logger.info(
+                            f"Add {payment_received.tx.from_address} to blacklist. New blacklist {self.local_ban_list}")
+                        return False
 
+        self.payment_log = combined_log
         success = self.ow.collect(payment_received)
 
         if p.collaberative_security:
             self.collaberative_check()
 
         return success
-
-    def sync_payment_log(self, payment_log):
-        for payment in payment_log:
-            # Check payment with payment certificate
-            if payment not in self.payment_log:
-                self.payment_log.append(payment)
 
     def get_payment_log(self):
         return self.payment_log
