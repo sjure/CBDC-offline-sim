@@ -42,6 +42,8 @@ class FraudUserNode(UserNode):
             balance = self.init_balance - self.money_sent
             logger.info(
                 f"{self.node_id} {self.ow.account_id} balance {balance}, sending {amount}")
+            Statistics.offline_tx += 1
+            Statistics.offline_tx_volume += amount
             if (amount > balance):
                 if (balance <= 0):
                     Statistics.fradulent_tx_sent += 1
@@ -49,9 +51,6 @@ class FraudUserNode(UserNode):
                 else:
                     Statistics.fradulent_tx_sent += 1
                     Statistics.fradulent_tx_sent_volume += amount - balance
-            else:
-                Statistics.offline_tx += 1
-                Statistics.offline_tx_volume += amount
             self.money_sent += amount
             self.payment_log = self.payment_log[:1]
 
