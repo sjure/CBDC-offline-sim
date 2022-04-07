@@ -3,7 +3,7 @@ from modules.Blockchain import BlockChain as bc
 from modules.Types import FRAUD_USER, NETWORK, INTERMEDIARY, USER
 
 
-def str_ljust(data_point: int, spacing=20):
+def str_ljust(data_point: int, spacing=15):
     return str(data_point).ljust(spacing)
 
 
@@ -19,10 +19,14 @@ class Statistics:
     fradulent_tx_detected_volume = 0
     fradulent_tx_sent = 0
     fradulent_tx_sent_volume = 0
+    fradulent_tx_attempted_sent = 0
+    fradulent_tx_attempted_sent_volume = 0
     fradulent_tx_client_prevention_prevented = 0
     fradulent_tx_client_prevention_prevented_volume = 0
     fradulent_tx_server_lockout_prevented = 0
     fradulent_tx_server_lockout_prevented_volume = 0
+    fradulent_tx_client_online_check = 0
+    fradulent_tx_client_online_check_volume = 0
 
     fraud_users = {}
 
@@ -52,27 +56,38 @@ class Statistics:
         print()
 
     def print_offline_online():
-        print("Online".ljust(40) + "Offline".ljust(40))
-        print("Tx".ljust(20) + "Volume".ljust(20) +
-              "Tx".ljust(20) + "Volume".ljust(20))
+        per_square = 15
+        print("Online".ljust(per_square*2) + "Offline".ljust(per_square*2))
+        print("Tx".ljust(per_square) + "Volume".ljust(per_square) +
+              "Tx".ljust(per_square) + "Volume".ljust(per_square))
         print(str_ljust(Statistics.online_tx) + str_ljust(Statistics.online_tx_volume) +
               str_ljust(Statistics.offline_tx) + str_ljust(Statistics.offline_tx_volume))
         print()
 
     def print_fraud():
-        print("Fraud Sendt".ljust(40) + "Fraud Detected".ljust(40))
-        print("Tx".ljust(20) + "Volume".ljust(20) +
-              "Tx".ljust(20) + "Volume".ljust(20))
-        print(str_ljust(Statistics.fradulent_tx_sent) + str_ljust(Statistics.fradulent_tx_sent_volume) +
+        per_square = 15
+        print("Fraud Attempt".ljust(per_square*2) +
+              "Fraud Success".ljust(per_square*2) +
+              "Success Fraud Detected".ljust(per_square*2))
+        print("Tx".ljust(per_square) + "Volume".ljust(per_square) +
+              "Tx".ljust(per_square) + "Volume".ljust(per_square) +
+              "Tx".ljust(per_square) + "Volume".ljust(per_square))
+        print(str_ljust(Statistics.fradulent_tx_attempted_sent) + str_ljust(Statistics.fradulent_tx_attempted_sent_volume) +
+              str_ljust(Statistics.fradulent_tx_sent) + str_ljust(Statistics.fradulent_tx_sent_volume) +
               str_ljust(Statistics.fradulent_tx_detected) + str_ljust(Statistics.fradulent_tx_detected_volume))
-        print("Fraud Prevented".ljust(40))
-        print("Client Prevention".ljust(40) + "Server Ban list".ljust(40))
-        print("Tx".ljust(20) + "Volume".ljust(20) +
-              "Tx".ljust(20) + "Volume".ljust(20))
+        print()
+        print("Client Prevention".ljust(per_square*2) +
+              "Server Ban list".ljust(per_square*2) +
+              "Client online check prevented".ljust(per_square*2))
+        print("Tx".ljust(per_square) + "Volume".ljust(per_square) +
+              "Tx".ljust(per_square) + "Volume".ljust(per_square) +
+              "Tx".ljust(per_square) + "Volume".ljust(per_square))
         print(str_ljust(Statistics.fradulent_tx_client_prevention_prevented) +
               str_ljust(Statistics.fradulent_tx_client_prevention_prevented_volume) +
               str_ljust(Statistics.fradulent_tx_server_lockout_prevented) +
-              str_ljust(Statistics.fradulent_tx_server_lockout_prevented_volume))
+              str_ljust(Statistics.fradulent_tx_server_lockout_prevented_volume) +
+              str_ljust(Statistics.fradulent_tx_client_online_check) +
+              str_ljust(Statistics.fradulent_tx_client_online_check_volume))
         print()
 
     def print_money_supply():

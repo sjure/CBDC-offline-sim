@@ -18,6 +18,7 @@ class FraudUserNode(UserNode):
     type = FRAUD_USER
     money_sent = 0
     init_balance = 0
+    fradulent_wallet_active = False
 
     def __init__(self, node_id=-1, **attr):
         super().__init__(node_id=node_id, **attr)
@@ -32,27 +33,35 @@ class FraudUserNode(UserNode):
     def update_connectivity(self, is_online, intermediary):
         pass
 
+    def offline_sufficient_funds(self, amount):
+        return True
+
     def send_money(self):
         """ request money"""
         neigbor_choice = int(random.randint(0, len(self.neighbors)))
         target = self.neighbors[neigbor_choice]
-        amount = min(self.get_offline_balance(), p.per_tx_amount_limit)
+        amount = min(self.init_balance, p.per_tx_amount_limit)
         success = self.send_offline_transaction(amount, target)
+        balance = self.init_balance - self.money_sent
+        if (balance < amount):
+            self.fradulent_wallet_active = True
+            self.ow.reset(p.per_tx_amount_limit)
+        if (self.fradulent_wallet_active):
+            self.payment_log = self.payment_log[:1]
+            Statistics.fradulent_tx_attempted_sent += 1
+            Statistics.fradulent_tx_attempted_sent_volume += amount
         if (success):
-            balance = self.init_balance - self.money_sent
             logger.info(
                 f"{self.node_id} {self.ow.account_id} balance {balance}, sending {amount}")
             Statistics.offline_tx += 1
             Statistics.offline_tx_volume += amount
             if (amount > balance):
-                if (balance <= 0):
-                    Statistics.fradulent_tx_sent += 1
-                    Statistics.fradulent_tx_sent_volume += amount
-                else:
-                    Statistics.fradulent_tx_sent += 1
-                    Statistics.fradulent_tx_sent_volume += amount - balance
+                Statistics.fradulent_tx_sent += 1
+                Statistics.fradulent_tx_sent_volume += amount
             self.money_sent += amount
-            self.payment_log = self.payment_log[:1]
+
+        if (amount <= balance and not success):
+            print(balance, self.fradulent_wallet_active)
 
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
         return self.ow.collect(payment_received)

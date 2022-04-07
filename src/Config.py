@@ -36,5 +36,5 @@ class InputsConfig:
     intemediary_refund_payee_fradulent_transactions = True
     per_tx_amount_limit = 1000
     client_preventions = True
-    lockout_after_consolidation = True
+    lockout_after_consolidation = False
     collaberative_security = False

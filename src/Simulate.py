@@ -41,7 +41,7 @@ class Simulate:
         eo.event_organizer()
         Simulate.cleanup()
         logger.info(bc.blocks)
-        # Statistics.print_all_balances(Simulate.graph)
+        Statistics.print_all_balances(Simulate.graph)
         Statistics.print_fradulent_user_balances()
         Statistics.print_state()
         logger.info("============= Run End ===============")

@@ -93,9 +93,15 @@ class UserNode(Node):
 
     def approve_recieve_offline_transaction(self, payer_node, amount):
         if (amount > p.per_tx_amount_limit):
+            print("OVER LIMIT")
             return False
         if (self.is_online):
-            return self.closest_intermediary.is_valid_tx(payer_node.get_offline_address(), amount)
+            isVal = self.closest_intermediary.is_valid_tx(
+                payer_node.get_offline_address(), amount)
+            if not isVal:
+                Statistics.fradulent_tx_client_online_check += 1
+                Statistics.fradulent_tx_client_online_check_volume += amount
+            return isVal
         return self.check_payer_node(payer_node, amount)
 
     def send_offline_transaction(self, amount, target):
@@ -220,6 +226,7 @@ class UserNode(Node):
             if node_sums[tx.from_address].counter >= tx.counter:
                 logger.info(f"ERROR: counter is not correct {tx}")
                 fradulent_tx.append(payment)
+                continue
             node_sums[tx.from_address].counter = tx.counter
             node_sums[tx.to_address].balance += tx.amount
             if not tx.depositType:
@@ -230,11 +237,13 @@ class UserNode(Node):
                 if combined_hash != payment.signature:
                     logger.info(f"ERROR: Hash signature is not correct {tx}")
                     fradulent_tx.append(payment)
+                    continue
                 node_sums[tx.from_address].balance -= tx.amount
                 if node_sums[tx.from_address].balance < 0:
                     logger.info(
                         f"User balance less than zero, tx={tx}, node_sums={node_sums}")
                     fradulent_tx.append(payment)
+                    continue
                 node_sums[tx.from_address].prev_hash = tx.hash
 
         if len(fradulent_tx):
