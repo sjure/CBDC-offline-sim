@@ -49,6 +49,9 @@ class FraudUserNode(UserNode):
                 else:
                     Statistics.fradulent_tx_sent += 1
                     Statistics.fradulent_tx_sent_volume += amount - balance
+            else:
+                Statistics.offline_tx += 1
+                Statistics.offline_tx_volume += amount
             self.money_sent += amount
             self.payment_log = self.payment_log[:1]
 
