@@ -2,11 +2,11 @@ class InputsConfig:
     """ Input config for the module """
     random_seed = 42
     tx_limit = 10000
-    tx_per_node = 20
+    tx_per_node = 10
     graph_type = "ba"
     graph_params = {
-        "n": 100,
-        "m": 3,
+        "n": 50,
+        "m": 8,
     }
     fraud_node_percentage = 0.1
     tx_rate = 5
