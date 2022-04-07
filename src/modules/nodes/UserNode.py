@@ -74,14 +74,18 @@ class UserNode(Node):
         self.is_online = is_online
         self.closest_intermediary = intermediary
 
-    def check_payer_node(self, payer_node):
+    def check_payer_node(self, payer_node, amount):
         if p.client_preventions:
             if payer_node.get_offline_address() in self.local_ban_list:
+                Statistics.fradulent_tx_client_prevention_prevented += 1
+                Statistics.fradulent_tx_client_prevention_prevented_volume += amount
                 logger.info(
                     f"ERROR: payer address in local ban list {payer_node.get_offline_address()}")
                 return False
         if p.lockout_after_consolidation:
             if payer_node.get_offline_address() in self.ban_list:
+                Statistics.fradulent_tx_server_lockout_prevented += 1
+                Statistics.fradulent_tx_server_lockout_prevented_volume += amount
                 logger.info(
                     f"ERROR: payer address in ban list {payer_node.get_offline_address()}")
                 return False
@@ -92,8 +96,7 @@ class UserNode(Node):
             return False
         if (self.is_online):
             return self.closest_intermediary.is_valid_tx(payer_node.get_offline_address(), amount)
-        else:
-            return self.check_payer_node(payer_node)
+        return self.check_payer_node(payer_node, amount)
 
     def send_offline_transaction(self, amount, target):
         if amount <= 0:
@@ -104,15 +107,16 @@ class UserNode(Node):
             success, payment, payment_log = self.create_offline_transaction(
                 amount, target)
             if (success):
-                Statistics.offline_tx += 1
-                Statistics.offline_tx_volume += payment.tx.amount
                 logger.info(
                     f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
                 pm_success = target.receive_payment(payment, payment_log)
+                if not pm_success:
+                    Statistics.fradulent_tx_client_prevention_prevented += 1
+                    Statistics.fradulent_tx_client_prevention_prevented_volume += amount
                 return pm_success
             else:
                 logger.info(
-                    f"no transaction, node-id={self.node_id} amount={amount}, offline-bal={self.get_offline_balance()}")
+                    f"no transaction, target={target.get_offline_address()} amount={amount} from={self.get_offline_address()}, offline-bal={self.get_offline_balance()}")
         else:
             logger.info(
                 f"Target did not accept transaction target={target.get_offline_address()} amount={amount} from={self.get_offline_address()}")
@@ -124,15 +128,17 @@ class UserNode(Node):
         target = self.neighbors[neigbor_choice]
         amount = min(max(int(random.normal(
             p.tx_volume["mean"], p.tx_volume["std"])), 1),  p.per_tx_amount_limit)
-        if (self.balance < amount):
-            return
         self.check_online()
         target.check_online()
         if (self.is_online and target.is_online):
+            if (self.balance < amount):
+                return
             # Do online transaction, both users can check the validity in the intermediary
             self.closest_intermediary.send_transaction(
                 self.node_id, target.node_id, amount)
         elif (self.is_online and not target.is_online):
+            if (self.balance < amount):
+                return
             # If the payee is offline, the payer will confirm the transaction with the intermediary
             # and send the signatrue as a receipt
             is_valid, tx, sign = self.closest_intermediary.send_transaction(
@@ -140,9 +146,18 @@ class UserNode(Node):
             if (is_valid):
                 target.recieve_confirmation(tx, sign)
         else:
+            if (self.get_offline_balance() < amount):
+                return
             # The case if both are offline, and if self is offline and receiver is online
             logger.info("Offline tx")
-            self.send_offline_transaction(amount, target)
+            success = self.send_offline_transaction(amount, target)
+            if success:
+                Statistics.offline_tx += 1
+                Statistics.offline_tx_volume += amount
+            else:
+                print("Should not happen")
+                print(target.get_offline_address(),
+                      amount, self.get_offline_address())
 
     def recieve_confirmation(self, tx, sign):
         # Check signature of intermediary with intermediary certificate

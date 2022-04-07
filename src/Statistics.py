@@ -19,6 +19,10 @@ class Statistics:
     fradulent_tx_detected_volume = 0
     fradulent_tx_sent = 0
     fradulent_tx_sent_volume = 0
+    fradulent_tx_client_prevention_prevented = 0
+    fradulent_tx_client_prevention_prevented_volume = 0
+    fradulent_tx_server_lockout_prevented = 0
+    fradulent_tx_server_lockout_prevented_volume = 0
 
     fraud_users = {}
 
@@ -61,6 +65,14 @@ class Statistics:
               "Tx".ljust(20) + "Volume".ljust(20))
         print(str_ljust(Statistics.fradulent_tx_sent) + str_ljust(Statistics.fradulent_tx_sent_volume) +
               str_ljust(Statistics.fradulent_tx_detected) + str_ljust(Statistics.fradulent_tx_detected_volume))
+        print("Fraud Prevented".ljust(40))
+        print("Client Prevention".ljust(40) + "Server Ban list".ljust(40))
+        print("Tx".ljust(20) + "Volume".ljust(20) +
+              "Tx".ljust(20) + "Volume".ljust(20))
+        print(str_ljust(Statistics.fradulent_tx_client_prevention_prevented) +
+              str_ljust(Statistics.fradulent_tx_client_prevention_prevented_volume) +
+              str_ljust(Statistics.fradulent_tx_server_lockout_prevented) +
+              str_ljust(Statistics.fradulent_tx_server_lockout_prevented_volume))
         print()
 
     def print_money_supply():

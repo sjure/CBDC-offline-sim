@@ -2,7 +2,7 @@ class InputsConfig:
     """ Input config for the module """
     random_seed = 42
     tx_limit = 10000
-    tx_per_node = 10
+    tx_per_node = 20
     graph_type = "ba"
     graph_params = {
         "n": 50,
@@ -35,6 +35,6 @@ class InputsConfig:
     # Testing parameters
     intemediary_refund_payee_fradulent_transactions = True
     per_tx_amount_limit = 1000
-    client_preventions = False
-    lockout_after_consolidation = False
+    client_preventions = True
+    lockout_after_consolidation = True
     collaberative_security = False
