@@ -162,6 +162,9 @@ class UserNode(Node):
                 Statistics.offline_tx_volume += amount
             else:
                 print("Should not happen")
+                logger.info("Should not happen")
+                logger.info(
+                    f"{target.get_offline_address()}, {amount}, {self.get_offline_address()}")
                 print(target.get_offline_address(),
                       amount, self.get_offline_address())
 
