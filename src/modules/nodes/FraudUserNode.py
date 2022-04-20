@@ -18,6 +18,7 @@ class FraudUserNode(UserNode):
     type = FRAUD_USER
     money_sent = 0
     init_balance = 0
+    fraud_sendt = 0
     fradulent_wallet_active = False
 
     def __init__(self, node_id=-1, **attr):
@@ -41,7 +42,6 @@ class FraudUserNode(UserNode):
         neigbor_choice = int(random.randint(0, len(self.neighbors)))
         target = self.neighbors[neigbor_choice]
         amount = min(self.init_balance, p.per_tx_amount_limit)
-        success = self.send_offline_transaction(amount, target)
         balance = self.init_balance - self.money_sent
         if (balance < amount):
             self.fradulent_wallet_active = True
@@ -50,15 +50,21 @@ class FraudUserNode(UserNode):
             self.payment_log = self.payment_log[:1]
             Statistics.fradulent_tx_attempted_sent += 1
             Statistics.fradulent_tx_attempted_sent_volume += amount
+        success = self.send_offline_transaction(amount, target)
         if (success):
             logger.info(
-                f"{self.node_id} {self.ow.account_id} balance {balance}, sending {amount}")
+                f"{self.ow.account_id} {self.ow.counter} balance {balance}, sending {amount}, counter={self.ow.counter} to {target.ow.account_id} ")
             Statistics.offline_tx += 1
             Statistics.offline_tx_volume += amount
-            if (amount > balance):
+            if (balance < amount):
                 Statistics.fradulent_tx_sent += 1
                 Statistics.fradulent_tx_sent_volume += amount
+                self.fraud_sendt += amount
             self.money_sent += amount
+        else:
+            logger.info(
+                f"{self.ow.account_id} {self.ow.counter} unsuccessfull")
+            logger.info(self.payment_log)
 
         if (amount <= balance and not success):
             print(balance, self.fradulent_wallet_active)
