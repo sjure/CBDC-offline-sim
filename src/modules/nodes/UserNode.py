@@ -96,12 +96,12 @@ class UserNode(Node):
             print("OVER LIMIT")
             return False
         if (self.is_online):
-            isVal = self.closest_intermediary.is_valid_tx(
+            isValid = self.closest_intermediary.is_valid_tx(
                 payer_node.get_offline_address(), amount)
-            if not isVal:
+            if not isValid:
                 Statistics.fradulent_tx_client_online_check += 1
                 Statistics.fradulent_tx_client_online_check_volume += amount
-            return isVal
+            return isValid
         return self.check_payer_node(payer_node, amount)
 
     def send_offline_transaction(self, amount, target):
@@ -114,7 +114,7 @@ class UserNode(Node):
                 amount, target)
             if (success):
                 logger.info(
-                    f"Offline transaction from {payment.tx.from_address} to {payment.tx.to_address} amount {amount}")
+                    f"Offline transaction from {payment.tx.from_address} {payment.tx.counter} to {payment.tx.to_address} amount {amount}")
                 pm_success = target.receive_payment(payment, payment_log)
                 if not pm_success:
                     Statistics.fradulent_tx_client_prevention_prevented += 1
@@ -239,6 +239,7 @@ class UserNode(Node):
                     transaction_hash.encode('utf-8') + previous_hash.encode('utf-8')).hexdigest()
                 if combined_hash != payment.signature:
                     logger.info(f"ERROR: Hash signature is not correct {tx}")
+                    logger.info(f"payments = {payment_log[0:payment_index]}")
                     fradulent_tx.append(payment)
                     continue
                 node_sums[tx.from_address].balance -= tx.amount
@@ -257,7 +258,7 @@ class UserNode(Node):
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
         # Temporary log to check together
         # If the sender of the payments is not fradulent in the log, then the payment is valid
-        combined_log = self.payment_log
+        combined_log = self.payment_log.copy()
         for pm in payment_log:
             if pm not in combined_log:
                 combined_log.append(pm)
