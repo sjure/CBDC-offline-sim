@@ -123,6 +123,18 @@ class Statistics:
                       str(node.get_offline_address()).ljust(25))
         print()
 
+    def print_fradulent_users_sent_bal(graph):
+        print("Offline account id".ljust(40) + "Sent".ljust(40))
+        sum = 0
+        for node_id in graph.nodes():
+            node = graph.get_node(node_id)
+            if node.type == FRAUD_USER:
+                sum += node.fraud_sendt
+                print(str(node.get_offline_address()).ljust(40) +
+                      str(node.fraud_sendt).ljust(40))
+        print(str_ljust("Sum", spacing=40) + str_ljust(sum, spacing=40))
+        print()
+
     def print_all_balances(graph):
         print("Node".ljust(5) + "Type".ljust(15) +
               "Active balance".ljust(25) + "Offline balance".ljust(15))

@@ -43,6 +43,7 @@ class Simulate:
         logger.info(bc.blocks)
         Statistics.print_all_balances(Simulate.graph)
         Statistics.print_fradulent_user_balances()
+        Statistics.print_fradulent_users_sent_bal(Simulate.graph)
         Statistics.print_state()
         logger.info("============= Run End ===============")
 

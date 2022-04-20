@@ -132,7 +132,7 @@ class BlockChain:
         is_valid = BlockChain.is_valid_transaction(tx.from_address, tx.amount)
         if not is_valid:
             logger.error(
-                f"ERROR: Invalid offline transaction to_address={tx.to_address} from_address={tx.from_address} value={tx.amount}")
+                f"ERROR: Invalid offline transaction to_address={tx.to_address} from_address={tx.from_address} {tx.counter} value={tx.amount} counter={tx.counter}")
             return False
         BlockChain.queue.append(tx)
         BlockChain.check_trigger_new_block()
