@@ -1,15 +1,14 @@
+from Config import InputsConfig as p
+from modules.network.NorGraph import NorGraph
+from modules.network.MeshGraph import MeshGraph
+from modules.network.BarabasiAlbert import BarabasiAlbert
+from Statistics import Statistics
+from EventOrganizer import EventOrganizer as eo
+from modules.Blockchain import BlockChain as bc
+import os
 import logging
-import secrets
 from numpy import random
 from modules.Types import NETWORK, INTERMEDIARY, USER
-from Config import InputsConfig as p
-from modules.Blockchain import BlockChain as bc
-from EventOrganizer import EventOrganizer as eo
-from Statistics import Statistics
-from modules.network.BarabasiAlbert import BarabasiAlbert
-from modules.network.MeshGraph import MeshGraph
-from modules.network.NorGraph import NorGraph
-
 
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
 logging.basicConfig(filename="log.log", format=LOGGING_FORMAT,
@@ -32,10 +31,13 @@ class Simulate:
     graph = graphs[p.graph_type](**p.graph_params, random=p.random_seed)
 
     def run():
+        Simulate.graph = graphs[p.graph_type](
+            **p.graph_params, random=p.random_seed)
+        print(p.graph_type, p.graph_params, len(Simulate.graph.nodes()))
         logger.info("============= New run ===============")
         Simulate.add_init_balance(p.balance["mean"], p.balance["std"])
         logger.info("============= Init balances added  ===============")
-        Statistics.print_fradulent_users(Simulate.graph)
+        # Statistics.print_fradulent_users(Simulate.graph)
         # Statistics.print_all_balances(Simulate.graph)
         eo.generate_events(Simulate.graph)
         logger.info("============= Events Generated ===============")
@@ -43,9 +45,9 @@ class Simulate:
         eo.event_organizer()
         Simulate.cleanup()
         logger.info(bc.blocks)
-        Statistics.print_all_balances(Simulate.graph)
-        Statistics.print_fradulent_user_balances()
-        Statistics.print_fradulent_users_sent_bal(Simulate.graph)
+        # Statistics.print_all_balances(Simulate.graph)
+        # Statistics.print_fradulent_user_balances()
+        # Statistics.print_fradulent_users_sent_bal(Simulate.graph)
         Statistics.print_state()
         logger.info("============= Run End ===============")
 
@@ -65,6 +67,23 @@ class Simulate:
         Statistics.online_money_init = online_balance
         Statistics.offline_money_init = offline_balance
         Statistics.total_money_before = online_balance + offline_balance
+
+    def log_results():
+        results = [
+            len(Simulate.graph.nodes()),
+            p.graph_params["n"],
+            p.graph_params["m"],
+            p.average_routers_per_node,
+            p.routers_tier_2,
+            Statistics.online_tx,
+            Statistics.offline_tx,
+            Statistics.fradulent_tx_attempted_sent,
+            Statistics.fradulent_tx_sent,
+        ]
+        header = "Total Nodes, User Nodes,m,Average routers per node, Routers, Online tx, Offline tx, Fraud tx attempted sent, fradulent tx sent"
+        result_csv = ", ".join([str(i) for i in results]) + "\n"
+        with open("results.csv", "a") as f:
+            f.write(result_csv)
 
     def cleanup():
         online_balance, offline_balance = Statistics.get_sum_of_balances(

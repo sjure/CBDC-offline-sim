@@ -1,16 +1,20 @@
+import os
+
+
 class InputsConfig:
     """ Input config for the module """
     random_seed = 42
-    tx_limit = 200
-    tx_per_node = 100
+    tx_limit = 10000
+    tx_per_node = 50
     graph_type = "mesh"
     graph_params = {
-        "n": 40,
+        "n": 1000,
         "m": 8,
     }
 
-    average_routers_per_node = 40
-    routers_tier_2 = 40
+    average_routers_per_node = float(
+        os.environ.get('average_routers_per_node', 40))
+    routers_tier_2 = int(os.environ.get('routers_tier_2', 40))
 
     fraud_node_percentage = 0.1
     tx_rate = 5
