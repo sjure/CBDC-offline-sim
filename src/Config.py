@@ -1,13 +1,17 @@
 class InputsConfig:
     """ Input config for the module """
     random_seed = 42
-    tx_limit = 10000
-    tx_per_node = 20
-    graph_type = "ba"
+    tx_limit = 200
+    tx_per_node = 100
+    graph_type = "mesh"
     graph_params = {
-        "n": 50,
+        "n": 40,
         "m": 8,
     }
+
+    average_routers_per_node = 40
+    routers_tier_2 = 40
+
     fraud_node_percentage = 0.1
     tx_rate = 5
     tx_rate_fraud = 5
