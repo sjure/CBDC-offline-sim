@@ -7,6 +7,7 @@ from modules.Blockchain import BlockChain as bc
 from EventOrganizer import EventOrganizer as eo
 from Statistics import Statistics
 from modules.network.BarabasiAlbert import BarabasiAlbert
+from modules.network.MeshGraph import MeshGraph
 from modules.network.NorGraph import NorGraph
 
 
@@ -21,6 +22,7 @@ logger = logging.getLogger("CBDCSimLog")
 graphs = {
     "ba": BarabasiAlbert,
     "no": NorGraph,
+    "mesh": MeshGraph
 }
 
 
