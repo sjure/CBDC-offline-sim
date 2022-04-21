@@ -5,7 +5,7 @@ class InputsConfig:
     """ Input config for the module """
     random_seed = 42
     tx_limit = 10000000
-    tx_per_node = 50
+    tx_per_node = 10
     graph_type = "mesh"
     graph_params = {
         "n": 1000,
@@ -32,13 +32,14 @@ class InputsConfig:
         "std": 0
     }
     network_failure_rate = 20
-    network_recovery_rate = 10
     intermediary_failure_rate = 30
     intermediary_recovery_rate = 5
     broadcast_coverage = 0.2
     intemediary_refund_payee_fradulent_transactions = True
 
     # Testing parameters
+    network_recovery_rate = int(
+        os.environ.get('network_recovery_rate', 10))
     intermediary_recovery_rate = int(
         os.environ.get('intermediary_recovery_rate', 5))
 

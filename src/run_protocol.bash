@@ -4,6 +4,7 @@ collaberative_security_range=(0 1)
 per_tx_amount_limit_range=(500 1000 2000 5000 10000 20000 50000 100000 200000 500000 1000000)
 intermediary_recovery_rate_range=(1 5 10 20 40 50)
 
+export csv_name="protocol_results"
 export routers_tier_2=15
 export average_routers_per_node=2
 
