@@ -82,7 +82,7 @@ class Simulate:
         ]
         header = "Total Nodes, User Nodes,m,Average routers per node, Routers, Online tx, Offline tx, Fraud tx attempted sent, fradulent tx sent"
         result_csv = ", ".join([str(i) for i in results]) + "\n"
-        with open("results.csv", "a") as f:
+        with open("output/results.csv", "a") as f:
             f.write(result_csv)
 
     def cleanup():
