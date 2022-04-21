@@ -24,8 +24,5 @@ client_preventions = bool(
 collaberative_security = bool(
     int(os.environ.get('collaberative_security',  0)))
 
-print(average_routers_per_node, routers_tier_2)
-print(per_tx_amount_limit, lockout_after_consolidation,
-      client_preventions, collaberative_security)
 Simulate.run()
 Simulate.log_results()
