@@ -1,5 +1,5 @@
 AVERAGE_ROUTERS_PER_NODE=(1 1.5 3 5)
-ROUTERS_TIER_2=(1 2 3 5 10 20 50 100 250 500 1000)
+ROUTERS_TIER_2=(1 2 3 5) #) 10 20 50 100 250 500 1000)
 
 for router_per_node in ${AVERAGE_ROUTERS_PER_NODE[@]}; do
     for routers_total in ${ROUTERS_TIER_2[@]}; do

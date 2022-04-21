@@ -34,6 +34,11 @@ class Simulate:
         Simulate.graph = graphs[p.graph_type](
             **p.graph_params, random=p.random_seed)
         print(p.graph_type, p.graph_params, len(Simulate.graph.nodes()))
+        print("tx_per_node", p.tx_per_node,
+              "\nper_tx_amount_limit", p.per_tx_amount_limit)
+        print("lockout_after_consolidation", p.lockout_after_consolidation,
+              "\nclient_preventions", p.client_preventions,
+              "\ncollaberative_security", p.collaberative_security)
         logger.info("============= New run ===============")
         Simulate.add_init_balance(p.balance["mean"], p.balance["std"])
         logger.info("============= Init balances added  ===============")
@@ -80,7 +85,7 @@ class Simulate:
             Statistics.fradulent_tx_attempted_sent,
             Statistics.fradulent_tx_sent,
         ]
-        header = "Total Nodes, User Nodes,m,Average routers per node, Routers, Online tx, Offline tx, Fraud tx attempted sent, fradulent tx sent"
+        header = "Total Nodes,User Nodes,Barabasi interconnection rate,Average routers per node,Routers,Online tx,Offline tx,Fraud tx attempted sent,fradulent tx sent"
         result_csv = ", ".join([str(i) for i in results]) + "\n"
         with open("output/results.csv", "a") as f:
             f.write(result_csv)
