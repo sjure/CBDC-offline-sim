@@ -24,7 +24,7 @@ class InputsConfig:
         "std": 40
     }
     balance = {
-        "mean": 5000,
+        "mean": 10000,
         "std": 2000
     }
     offline_balance_preferance = {
