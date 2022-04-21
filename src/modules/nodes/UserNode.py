@@ -30,6 +30,7 @@ class UserNode(Node):
         self.ban_list = set()
         self.local_ban_list = set()
         self.fradulent_tx = []
+        self.bc_random = random.RandomState(p.random_seed)
 
     def redeem_offline_transactions(self, intermediary):
         payments = self.payment_log
@@ -282,9 +283,40 @@ class UserNode(Node):
         success = self.ow.collect(payment_received)
 
         if p.collaberative_security:
-            self.collaberative_check()
+            self.broadcast_logs()
 
         return success
+
+    def sync_logs(self, payment_log, sender):
+        combined_log = self.payment_log.copy()
+        for pm in payment_log:
+            if pm not in combined_log:
+                combined_log.append(pm)
+        successfull_validate, fradulent_tx = self.validate_log(
+            combined_log)
+        if not successfull_validate:
+            for pm in fradulent_tx:
+                tx = pm.tx
+                logger.info(
+                    f"Unsuccessfull validate incomming broadcast fraudster {tx.from_address}")
+                if pm not in self.fradulent_tx:
+                    self.fradulent_tx.append(pm)
+                if tx.from_address == sender.get_offline_address():
+                    self.local_ban_list.add(
+                        sender.get_offline_address())
+                    logger.info(
+                        f"Add {sender.get_offline_address()} to blacklist for bad logs. New blacklist {self.local_ban_list}")
+                    return False
+        self.payment_log = combined_log
+        return True
+
+    def broadcast_logs(self):
+        nodes_to_broadcast_to = int(len(self.neighbors) * p.broadcast_coverage)
+        neighbors_to_broadcast = self.bc_random.choice(
+            self.neighbors, nodes_to_broadcast_to, replace=False)
+        for neighbor in neighbors_to_broadcast:
+            neighbor.sync_logs(self.payment_log, self)
+        return True
 
     def get_payment_log(self):
         return self.payment_log

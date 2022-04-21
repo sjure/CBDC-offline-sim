@@ -31,10 +31,11 @@ class InputsConfig:
     network_recovery_rate = 5
     intermediary_failure_rate = 30
     intermediary_recovery_rate = 5
+    broadcast_coverage = 0.4
 
     # Testing parameters
     intemediary_refund_payee_fradulent_transactions = True
     per_tx_amount_limit = 1000
-    client_preventions = True
     lockout_after_consolidation = False
+    client_preventions = False
     collaberative_security = False
