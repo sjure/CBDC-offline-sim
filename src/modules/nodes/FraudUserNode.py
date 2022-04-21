@@ -43,7 +43,7 @@ class FraudUserNode(UserNode):
         target = self.neighbors[neigbor_choice]
         amount = min(self.init_balance, p.per_tx_amount_limit)
         balance = self.init_balance - self.money_sent
-        if (balance < amount):
+        if (balance < amount or balance <= 0):
             self.fradulent_wallet_active = True
             self.ow.reset(p.per_tx_amount_limit)
         if (self.fradulent_wallet_active):
@@ -67,7 +67,7 @@ class FraudUserNode(UserNode):
             logger.info(self.payment_log)
 
         if (amount <= balance and not success):
-            print(balance, self.fradulent_wallet_active)
+            print("shit", amount, balance, self.fradulent_wallet_active)
 
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
         return self.ow.collect(payment_received)
