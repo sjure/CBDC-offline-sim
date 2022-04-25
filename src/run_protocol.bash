@@ -19,7 +19,7 @@ for recovery_rate in ${intermediary_recovery_rate_range[@]}; do
                     export collaberative_security=$cs
                     export per_tx_amount_limit=$tx_limit
                     export intermediary_recovery_rate=$recovery_rate
-                    ../venv/bin/python3 run.py
+                    ../venv/bin/python3 run.py > proto_log.txt
                 done
             done
         done
