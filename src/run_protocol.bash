@@ -13,13 +13,14 @@ for recovery_rate in ${intermediary_recovery_rate_range[@]}; do
         for cs in ${collaberative_security_range[@]}; do
             for cp in ${client_preventions_range[@]}; do
                 for lc in ${lockout_after_consolidation_range[@]}; do
+                    echo "New run with parameters: recovery_rate ${recovery_rate}, tx_limit ${tx_limit}, cs ${cs}, cp ${cp}, lc ${lc}" >> proto_run_log.txt
                     echo "New run with parameters: recovery_rate ${recovery_rate}, tx_limit ${tx_limit}, cs ${cs}, cp ${cp}, lc ${lc}"
                     export lockout_after_consolidation=$lc
                     export client_preventions=$cp
                     export collaberative_security=$cs
                     export per_tx_amount_limit=$tx_limit
                     export intermediary_recovery_rate=$recovery_rate
-                    ../venv/bin/python3 run.py > proto_log.txt
+                    ../venv/bin/python3 run.py >> proto_log.txt
                 done
             done
         done
