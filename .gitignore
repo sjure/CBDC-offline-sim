@@ -27,6 +27,12 @@ share/python-wheels/
 *.egg
 MANIFEST
 src/assets/images/
+*.txt
+*.png
+*.svg
+*.pdf
+venv2/
+output/
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
