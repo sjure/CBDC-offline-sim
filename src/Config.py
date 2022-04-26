@@ -29,13 +29,13 @@ class InputsConfig:
     intemediary_refund_payee_fradulent_transactions = True
 
     # Testing parameters
-    fraud_node_percentage = int(
+    fraud_node_percentage = float(
         os.environ.get('fraud_node_percentage', 0.1))
 
     network_failure_rate = int(
         os.environ.get('network_failure_rate', 20))
     intermediary_failure_rate = int(
-        os.environ.get('intermediary_failure_rate', 100))
+        os.environ.get('intermediary_failure_rate', 10))
     nodes = nodes = int(
         os.environ.get('nodes', 50))
     tx_per_node = int(
@@ -47,9 +47,9 @@ class InputsConfig:
     }
 
     network_recovery_rate = int(
-        os.environ.get('network_recovery_rate', 20))
+        os.environ.get('network_recovery_rate', 10))
     intermediary_recovery_rate = int(
-        os.environ.get('intermediary_recovery_rate', 5))
+        os.environ.get('intermediary_recovery_rate', 10))
 
     per_tx_amount_limit = int(os.environ.get('per_tx_amount_limit', 1000))
     lockout_after_consolidation = bool(
