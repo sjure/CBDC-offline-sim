@@ -37,7 +37,7 @@ class MeshGraph(Graph):
         self.t1_nodes.append(mesh.t1)
         self.t2_nodes = [*self.t2_nodes, *mesh.t2]
         self.user_nodes = [*self.user_nodes, *mesh.nodes]
-
+        # self.draw()
         self.init_neighbors()
 
 

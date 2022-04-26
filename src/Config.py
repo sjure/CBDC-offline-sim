@@ -5,14 +5,8 @@ class InputsConfig:
     """ Input config for the module """
     random_seed = 42
     tx_limit = 10000000
-    tx_per_node = 10
     graph_type = "mesh"
-    graph_params = {
-        "n": 1000,
-        "m": 20,
-    }
 
-    fraud_node_percentage = 0.1
     tx_rate = 5
     tx_rate_fraud = 5
     tx_volume = {
@@ -31,15 +25,29 @@ class InputsConfig:
         "mean": 1_000_000,
         "std": 0
     }
-    network_failure_rate = 20
-    intermediary_failure_rate = 30
-    intermediary_recovery_rate = 5
     broadcast_coverage = 0.2
     intemediary_refund_payee_fradulent_transactions = True
 
     # Testing parameters
+    fraud_node_percentage = int(
+        os.environ.get('fraud_node_percentage', 0.1))
+
+    network_failure_rate = int(
+        os.environ.get('network_failure_rate', 20))
+    intermediary_failure_rate = int(
+        os.environ.get('intermediary_failure_rate', 100))
+    nodes = nodes = int(
+        os.environ.get('nodes', 50))
+    tx_per_node = int(
+        os.environ.get('tx_per_node', 20))
+
+    graph_params = {
+        "n": nodes,
+        "m": 20,
+    }
+
     network_recovery_rate = int(
-        os.environ.get('network_recovery_rate', 10))
+        os.environ.get('network_recovery_rate', 20))
     intermediary_recovery_rate = int(
         os.environ.get('intermediary_recovery_rate', 5))
 
@@ -52,5 +60,5 @@ class InputsConfig:
         int(os.environ.get('collaberative_security', False)))
 
     average_routers_per_node = float(
-        os.environ.get('average_routers_per_node', 1.5))
-    routers_tier_2 = int(os.environ.get('routers_tier_2', 3))
+        os.environ.get('average_routers_per_node', 5))
+    routers_tier_2 = int(os.environ.get('routers_tier_2', 50))

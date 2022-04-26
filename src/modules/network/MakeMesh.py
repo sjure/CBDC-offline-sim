@@ -44,8 +44,10 @@ class MakeMesh():
         routers_tier_1 = [prefix + str(ROUTER_TIER_1_NODE_PREFIX)]
         edges = []
         for node in range(n):
-            selected_routers = self.random_choice.choice(range(ROUTERS_TIER_2), probabilistic_round(
-                AVERAGE_ROUTERS_PER_NODE), replace=False)
+            pick = probabilistic_round(
+                AVERAGE_ROUTERS_PER_NODE)
+            selected_routers = self.random_choice.choice(
+                range(ROUTERS_TIER_2), pick, replace=True)
             edges.extend([(node, ROUTER_TIER_2_NODE_PREFIX + router,)
                           for router in selected_routers])
         edges = edges + list(ba.edges())
