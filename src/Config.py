@@ -3,7 +3,8 @@ import os
 
 class InputsConfig:
     """ Input config for the module """
-    random_seed = 42
+    random_seed = int(
+        os.environ.get('random_seed', 42))
     tx_limit = 10000000
     graph_type = "mesh"
 

@@ -76,6 +76,7 @@ class Simulate:
 
     def log_results():
         results = [
+            p.seed,
             len(Simulate.graph.nodes()),
             p.graph_params["n"],
             p.graph_params["m"],
@@ -105,6 +106,7 @@ class Simulate:
             Statistics.fradulent_tx_server_lockout_prevented_volume,
         ]
         header = """
+seed,
 Total Nodes,
 User Nodes,
 Barabasi interconnection rate,
