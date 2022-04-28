@@ -76,7 +76,7 @@ class Simulate:
 
     def log_results():
         results = [
-            p.seed,
+            p.random_seed,
             len(Simulate.graph.nodes()),
             p.graph_params["n"],
             p.graph_params["m"],
