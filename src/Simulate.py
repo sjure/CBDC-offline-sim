@@ -12,8 +12,8 @@ from modules.Types import NETWORK, INTERMEDIARY, USER
 
 filename = os.environ.get('csv_name', "test")
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
-logging.basicConfig(filename=f"{filename}.log", format=LOGGING_FORMAT,
-                    level=logging.INFO, datefmt="%H:%M:%S", filemode='w',)
+# logging.basicConfig(filename=f"{filename}.log", format=LOGGING_FORMAT,
+#                    level=logging.INFO, datefmt="%H:%M:%S", filemode='w',)
 
 random.seed(p.random_seed)
 
