@@ -12,8 +12,8 @@ from modules.Types import NETWORK, INTERMEDIARY, USER
 
 filename = os.environ.get('csv_name', "test")
 LOGGING_FORMAT = "%(asctime)s.%(msecs)03d %(message)s"
-logging.basicConfig(filename=f"{filename}.log", format=LOGGING_FORMAT,
-                    level=logging.INFO, datefmt="%H:%M:%S", filemode='w',)
+# logging.basicConfig(filename=f"{filename}.log", format=LOGGING_FORMAT,
+#                    level=logging.INFO, datefmt="%H:%M:%S", filemode='w',)
 
 random.seed(p.random_seed)
 
@@ -76,6 +76,7 @@ class Simulate:
 
     def log_results():
         results = [
+            p.random_seed,
             len(Simulate.graph.nodes()),
             p.graph_params["n"],
             p.graph_params["m"],
@@ -105,6 +106,7 @@ class Simulate:
             Statistics.fradulent_tx_server_lockout_prevented_volume,
         ]
         header = """
+seed,
 Total Nodes,
 User Nodes,
 Barabasi interconnection rate,
