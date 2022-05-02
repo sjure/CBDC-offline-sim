@@ -66,9 +66,6 @@ class FraudUserNode(UserNode):
                 f"{self.ow.account_id} {self.ow.counter} unsuccessfull")
             logger.info(self.payment_log)
 
-        if (amount <= balance and not success):
-            print("shit", amount, balance, self.fradulent_wallet_active)
-
     def receive_payment(self, payment_received: OfflinePayment, payment_log):
         return self.ow.collect(payment_received)
 

@@ -161,13 +161,6 @@ class UserNode(Node):
             if success:
                 Statistics.offline_tx += 1
                 Statistics.offline_tx_volume += amount
-            else:
-                print("Should not happen")
-                logger.info("Should not happen")
-                logger.info(
-                    f"{target.get_offline_address()}, {amount}, {self.get_offline_address()}")
-                print(target.get_offline_address(),
-                      amount, self.get_offline_address())
 
     def recieve_confirmation(self, tx, sign):
         # Check signature of intermediary with intermediary certificate
