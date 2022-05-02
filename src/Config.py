@@ -37,7 +37,7 @@ class InputsConfig:
         os.environ.get('network_failure_rate', 20))
     intermediary_failure_rate = int(
         os.environ.get('intermediary_failure_rate', 10))
-    nodes = nodes = int(
+    nodes = int(
         os.environ.get('nodes', 50))
     tx_per_node = int(
         os.environ.get('tx_per_node', 20))
