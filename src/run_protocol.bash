@@ -8,7 +8,7 @@ intermediary_recovery_rate_range=(10 20 50 100)
 
 export csv_name="protocol_results"
 export nodes=50
-export tx_per_node=20
+export tx_per_node=100
 export routers_tier_2=2
 export average_routers_per_node=1.5
 export intermediary_failure_rate=4

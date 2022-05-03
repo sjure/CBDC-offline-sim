@@ -3,7 +3,7 @@ random_seed_list=(1 2 3 42 5 6 7 8 9 10)
 
 
 export nodes=50
-export tx_per_node=20
+export tx_per_node=200
 export csv_name="architecture_results"
 export per_tx_amount_limit=3000
 export lockout_after_consolidation="0"
