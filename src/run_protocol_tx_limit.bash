@@ -33,6 +33,7 @@ for seed in ${random_seed_list[@]}; do
                     export client_preventions="1"
                     export collaberative_security="1"
                 fi
+		export random_seed=$seed
                 export per_tx_amount_limit=$tx_limit
                 export intermediary_recovery_rate=$recovery_rate
                 ../venv/bin/python3 run.py >> proto_log.txt
