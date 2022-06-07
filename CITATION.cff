@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: CBDC offline framework
+title: CBDC Offline Simulation Framework
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -16,3 +16,4 @@ authors:
     family-names: Janzso
     email: janzsodennis@gmail.com
     affiliation: NTNU
+date-released: 2022-06-07
